@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 NAudio.Vorbis    [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/naudio/Vorbis?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 -------
 
@@ -20,3 +21,7 @@ using (var waveOut = new NAudio.Wave.WaveOutEvent())
 ```
 
 If you have any questions or comments, feel free to join us on Gitter.  If you have any issues or feature requests, please submit them in the issue tracker.
+=======
+# FMOD
+SCP:秘密实验室的插件框架, 使用0Harmony搭建的事件系统
+>>>>>>> 11b4711efc44190cd67232e30ccf4b818e8662fd

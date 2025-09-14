@@ -15,7 +15,7 @@ If "Welcome to FMOD" is displayed, the installation was successful.
 
 
 # Plugin Development  
-[Click here to view](https://github.com/SL-114514NM/FMOD/blob/main/README.md#%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B--development-tutorial)  
+[Click here to view](https://github.com/FownMOD/FMOD/blob/main/README.md#%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B--development-tutorial)  
 
 # Commands  
 The built-in command is `fmod`.  
@@ -33,7 +33,7 @@ Subcommands:
 重启服务器\
 显示"欢迎使用FMOD"表示安装成功
 # 制作插件
-[点击查看](https://github.com/SL-114514NM/FMOD/blob/main/README.md#%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B--development-tutorial)
+[点击查看](https://github.com/FownMOD/FMOD/blob/main/README.md#%E5%BC%80%E5%8F%91%E6%95%99%E7%A8%8B--development-tutorial)
 # 命令
 内置了一个命令"fmod"\
 子命令:\

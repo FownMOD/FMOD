@@ -1,0 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FMOD.Enums
+{
+    public enum DoorName
+    {
+        UnknownDoor,
+        Scp914Door,
+        GR18Inner,
+        Scp049Gate,
+        Scp049Armory,
+        Scp079First,
+        Scp079Second,
+        Scp096,
+        Scp079Armory,
+        Scp106Primary,
+        Scp106Secondary,
+        Scp173Gate,
+        Scp173Connector,
+        Scp173Armory,
+        Scp173Bottom,
+        GR18Gate,
+        Scp914Gate,
+        Scp939Cryo,
+        CheckpointLczA,
+        CheckpointLczB,
+        EntranceDoor,
+        EscapePrimary,
+        EscapeSecondary,
+        GateA,
+        GateB,
+        HczArmory,
+        HeavyContainmentDoor,
+        HeavyBulkDoor,
+        HIDChamber,
+        [Obsolete("This Door has been renamed too HID_LAB.")]
+        HIDUpper,
+        HIDLab = 29,
+        [Obsolete("This Door has been removed from the game.")]
+        HIDLower,
+        Intercom,
+        LczArmory,
+        LczCafe,
+        LczWc,
+        LightContainmentDoor,
+        NukeArmory,
+        NukeSurface,
+        PrisonDoor,
+        SurfaceGate,
+        Scp330,
+        Scp330Chamber,
+        CheckpointGateA,
+        CheckpointGateB,
+        SurfaceDoor,
+        CheckpointEzHczA,
+        CheckpointEzHczB,
+        UnknownGate,
+        UnknownElevator,
+        ElevatorGateA,
+        ElevatorGateB,
+        ElevatorNuke,
+        ElevatorScp049,
+        ElevatorLczA,
+        ElevatorLczB,
+        CheckpointArmoryA,
+        CheckpointArmoryB,
+        Airlock,
+        Scp173NewGate,
+        EscapeFinal,
+        ElevatorServerRoom,
+        Hcz127Lab,
+        ServerRoomCloset,
+        Scp106Checkpoint,
+        TestRoom,
+        PlantsCloset,
+        Checkpoint
+    }
+}

@@ -6,6 +6,7 @@ using LabApi.Loader.Features.Plugins;
 using Mirror;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace FMOD
     public class FMODConfig
     {
         public bool IsEnabled { get; set; } = true;
+        [Description("FMOD的总目录")]
+        public string FMODFile { get; set; } = Paths.BaseDir;
         
     }
     public class FMOD : Plugin<FMODConfig>
@@ -32,9 +35,19 @@ namespace FMOD
         public int ServerPort { get; set; } = ServerStatic.ServerPort;
         public override void Enable()
         {
+            Events.Handlers.Player.RegisterAllLabEvents();
             Harmony harmony = new Harmony($"{Name}.{Version}");
-            Log.CustomInfo($"使用Harmony进行事件注册", UnityEngine.Color.gray);
-            Log.CustomInfo($"===>{Name}.{Version}注册成功<===", UnityEngine.Color.gray);
+            Log.CustomInfo($"使用Harmony进行事件注册", UnityEngine.Color.blue);
+            try
+            {
+                PatcherAccess.PatchAll();
+                Log.CustomInfo($"===>{Name}.{Version}注册成功<===", UnityEngine.Color.blue);
+            }
+            catch(Exception e)
+            {
+                Log.Error($"注册失败");
+                Log.Error(e.Message.ToString());
+            }
             Paths.GenerateFoldersAndFiles(ServerPort);
             Load.LoadAllPlugins(ServerPort);
             Permissions.Initialize();
@@ -44,47 +57,10 @@ namespace FMOD
         }
         public override void Disable()
         {
+            Events.Handlers.Player.UnRegisterAllLabEvents();
             Load.DisableAllPlugins();
             Log.CustomInfo($"FMOD已被禁用", UnityEngine.Color.red);
             Log.Debug($"{LogMsg.FMOD}");
-        }
-        /// <summary>
-        /// Patches all events.
-        /// </summary>
-        public void Patch()
-        {
-            try
-            {
-                Patcher = new Patcher();
-#if DEBUG
-                bool lastDebugStatus = Harmony.DEBUG;
-                Harmony.DEBUG = true;
-#endif
-                Patcher.PatchAll(false, out int failedPatch);
-
-                if (failedPatch == 0)
-                    Log.Debug("Events patched successfully!");
-                else
-                    Log.Error($"Patching failed! There are {failedPatch} broken patches.");
-#if DEBUG
-                Harmony.DEBUG = lastDebugStatus;
-#endif
-            }
-            catch (Exception exception)
-            {
-                Log.Error($"Patching failed!\n{exception}");
-            }
-        }
-
-        /// <summary>
-        /// Unpatches all events.
-        /// </summary>
-        public void Unpatch()
-        {
-            Log.Debug("Unpatching events...");
-            Patcher.UnpatchAll();
-            Patcher = null;
-            Log.Debug("All events have been unpatched complete. Goodbye!");
         }
     }
 }

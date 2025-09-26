@@ -16,7 +16,7 @@ namespace FMOD.Events.EventArgs.Player
     {
         public ShootingEventArgs(InventorySystem.Items.Firearms.Firearm firearm, ref ShotBacktrackData shotBacktrackData)
         {
-            this.Firearm = (Firearm)Item.Get(firearm);
+            this.Firearm = (FirearmItem)Item.Get(firearm);
             this.Player = this.Firearm.CurrentOwner;
             this.ShotBacktrackData = shotBacktrackData;
         }
@@ -57,7 +57,7 @@ namespace FMOD.Events.EventArgs.Player
                 return this.Firearm;
             }
         }
-        public Firearm Firearm;
+        public FirearmItem Firearm;
         public bool IsAllowed { get; set; } = true;
     }
 }

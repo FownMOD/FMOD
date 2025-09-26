@@ -9,13 +9,13 @@ using UnityEngine;
 
 namespace FMOD.API.Items
 {
-    public class Firearm:Item
+    public class FirearmItem:Item
     {
-        public Firearm(InventorySystem.Items.Firearms.Firearm firearm)
+        public FirearmItem(InventorySystem.Items.Firearms.Firearm firearm)
         {
             this.Base = firearm;
         }
-        public static List<Firearm> Firearms = new List<Firearm>();
+        public static List<FirearmItem> Firearms = new List<FirearmItem>();
         public HitscanHitregModuleBase HitscanHitregModule { get; }
         public AnimatorReloaderModuleBase AnimatorReloaderModule { get; }
         public new GameObject GameObject => Base.gameObject;

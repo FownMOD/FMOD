@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace FMOD.API
+namespace FMOD.API.Items
 {
     public class Item
     {
@@ -36,7 +36,7 @@ namespace FMOD.API
             }
             else
             {
-                result2 = new API.Items.Firearm(firearm);
+                result2 = new API.Items.FirearmItem(firearm);
             }
             return result2;
         }

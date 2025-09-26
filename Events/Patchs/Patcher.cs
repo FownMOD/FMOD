@@ -1,4 +1,5 @@
-﻿using FMOD.Events.Interfaces;
+﻿using FMOD.Cores;
+using FMOD.Events.Interfaces;
 using HarmonyLib;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,6 @@ namespace FMOD.Events.Patchs
 {
     public class Patcher
     {
-        /// <summary>
-        /// The below variable is used to increment the name of the harmony instance, otherwise harmony will not work upon a plugin reload.
-        /// </summary>
         private static int patchesCounter;
 
         /// <summary>
@@ -30,87 +28,104 @@ namespace FMOD.Events.Patchs
         public static HashSet<Type> UnpatchedTypes { get; private set; } = GetAllPatchTypes();
 
         /// <summary>
-        /// Gets a set of types and methods for which FMOD patches should not be run.
-        /// </summary>
-        public static HashSet<MethodBase> DisabledPatchesHashSet { get; } = new HashSet<MethodBase>();
-
-        /// <summary>
         /// Gets the <see cref="HarmonyLib.Harmony"/> instance.
         /// </summary>
         public Harmony Harmony { get; }
 
         /// <summary>
-        /// Patches all events that target a specific <see cref="IFMODEvent"/>.
+        /// Patches all events that target a specific event handler and event args.
         /// </summary>
-        /// <param name="event">The <see cref="IFMODEvent"/> all matching patches should target.</param>
-        public void Patch(IFMODEvent @event)
+        /// <param name="eventHandlerType">The event handler type.</param>
+        /// <param name="eventArgsType">The event args type.</param>
+        public void Patch(Type eventHandlerType, Type eventArgsType)
         {
             try
             {
                 var types = UnpatchedTypes.Where(x =>
-                    x.GetCustomAttributes<EventPatchAttribute>().Any(epa => epa.Event == @event)).ToList();
+                    x.GetCustomAttributes<EventPatchAttribute>()
+                     .Any(epa => epa.EventHandlerType == eventHandlerType &&
+                                 epa.EventArgsType == eventArgsType))
+                     .ToList();
 
                 foreach (var type in types)
                 {
-                    var methodInfos = new PatchClassProcessor(Harmony, type).Patch();
-                    if (methodInfos.Any(DisabledPatchesHashSet.Contains))
-                        ReloadDisabledPatches();
-
+                    Harmony.CreateClassProcessor(type).Patch();
                     UnpatchedTypes.Remove(type);
+                    Console.WriteLine($"[FMOD] 已打补丁: {type.Name} -> {eventHandlerType.Name}.{eventArgsType.Name}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[FMOD] Patching by event failed!\n{ex}");
+                Console.WriteLine($"[FMOD] 按事件打补丁失败!\n{ex}");
+            }
+        }
+
+        /// <summary>
+        /// Patches all events for a specific event handler.
+        /// </summary>
+        /// <param name="eventHandlerType">The event handler type.</param>
+        public void Patch(Type eventHandlerType)
+        {
+            try
+            {
+                var types = UnpatchedTypes.Where(x =>
+                    x.GetCustomAttributes<EventPatchAttribute>()
+                     .Any(epa => epa.EventHandlerType == eventHandlerType))
+                     .ToList();
+
+                foreach (var type in types)
+                {
+                    var attribute = type.GetCustomAttributes<EventPatchAttribute>()
+                        .First(epa => epa.EventHandlerType == eventHandlerType);
+
+                    Harmony.CreateClassProcessor(type).Patch();
+                    UnpatchedTypes.Remove(type);
+                    Console.WriteLine($"[FMOD] 已打补丁: {type.Name} -> {attribute.EventName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FMOD] 按事件处理器打补丁失败!\n{ex}");
             }
         }
 
         /// <summary>
         /// Patches all events.
         /// </summary>
-        /// <param name="includeEvents">Whether to patch events as well as all required patches.</param>
         /// <param name="failedPatch">the number of failed patch returned.</param>
-        public void PatchAll(bool includeEvents, out int failedPatch)
+        public void PatchAll(out int failedPatch)
         {
             failedPatch = 0;
 
             try
             {
-                var toPatch = includeEvents ?
-                    UnpatchedTypes.ToList() :
-                    UnpatchedTypes.Where(type => !type.GetCustomAttributes<EventPatchAttribute>().Any()).ToList();
+                var toPatch = UnpatchedTypes.ToList();
 
                 foreach (var patch in toPatch)
                 {
                     try
                     {
+                        var attributes = patch.GetCustomAttributes<EventPatchAttribute>();
                         Harmony.CreateClassProcessor(patch).Patch();
                         UnpatchedTypes.Remove(patch);
+
+                        foreach (var attribute in attributes)
+                        {
+                            Console.WriteLine($"[FMOD] 已打补丁: {patch.Name} -> {attribute.EventName}");
+                        }
                     }
                     catch (HarmonyException exception)
                     {
-                        Console.WriteLine($"[FMOD] Patching by attributes failed!\n{exception}");
+                        Console.WriteLine($"[FMOD] 打补丁失败!\n{exception}");
                         failedPatch++;
                     }
                 }
 
-                Console.WriteLine("[FMOD] Events patched by attributes successfully!");
+                Console.WriteLine("[FMOD] 所有补丁已成功应用!");
             }
             catch (Exception exception)
             {
-                Console.WriteLine($"[FMOD] Patching by attributes failed!\n{exception}");
-            }
-        }
-
-        /// <summary>
-        /// Checks the <see cref="DisabledPatchesHashSet"/> list and un-patches any methods that have been defined there. Once un-patching has been done, they can be patched by plugins, but will not be re-patchable by FMOD until a server reboot.
-        /// </summary>
-        public void ReloadDisabledPatches()
-        {
-            foreach (var method in DisabledPatchesHashSet)
-            {
-                Harmony.Unpatch(method, HarmonyPatchType.All, Harmony.Id);
-                Console.WriteLine($"[FMOD] Unpatched {method.Name}");
+                Console.WriteLine($"[FMOD] 打补丁失败!\n{exception}");
             }
         }
 
@@ -119,10 +134,10 @@ namespace FMOD.Events.Patchs
         /// </summary>
         public void UnpatchAll()
         {
-            Console.WriteLine("[FMOD] Unpatching events...");
+            Console.WriteLine("[FMOD] 移除补丁...");
             Harmony.UnpatchAll(Harmony.Id);
             UnpatchedTypes = GetAllPatchTypes();
-            Console.WriteLine("[FMOD] All events have been unpatched.");
+            Console.WriteLine("[FMOD] 所有补丁已移除");
         }
 
         /// <summary>
@@ -135,31 +150,64 @@ namespace FMOD.Events.Patchs
             {
                 return Assembly.GetExecutingAssembly()
                     .GetTypes()
-                    .Where(type => type.GetCustomAttributes<HarmonyPatch>().Any())
+                    .Where(type => type.GetCustomAttributes<HarmonyPatch>().Any() ||
+                                   type.GetCustomAttributes<EventPatchAttribute>().Any())
                     .ToHashSet();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[FMOD] Failed to get patch types: {ex.Message}");
+                Console.WriteLine($"[FMOD] 获取补丁类型失败: {ex.Message}");
                 return new HashSet<Type>();
             }
         }
     }
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class EventPatchAttribute : Attribute
+
+    /// <summary>
+    /// Static access to the patcher.
+    /// </summary>
+    public static class PatcherAccess
     {
+        private static Patcher _patcher;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="EventPatchAttribute"/> class.
+        /// Gets the patcher instance.
         /// </summary>
-        /// <param name="event">The event this patch is associated with.</param>
-        public EventPatchAttribute(IFMODEvent @event)
+        public static Patcher Patcher => _patcher = new Patcher();
+
+        /// <summary>
+        /// Patches all events.
+        /// </summary>
+        public static void PatchAll()
         {
-            Event = @event;
+            Patcher.PatchAll(out int failedPatches);
+            if (failedPatches > 0)
+            {
+                Console.WriteLine($"[FMOD] {failedPatches} 个补丁应用失败");
+            }
         }
 
         /// <summary>
-        /// Gets the event this patch is associated with.
+        /// Patches events for a specific event handler and event args.
         /// </summary>
-        public IFMODEvent Event { get; }
+        public static void Patch(Type eventHandlerType, Type eventArgsType)
+        {
+            Patcher.Patch(eventHandlerType, eventArgsType);
+        }
+
+        /// <summary>
+        /// Patches all events for a specific event handler.
+        /// </summary>
+        public static void Patch(Type eventHandlerType)
+        {
+            Patcher.Patch(eventHandlerType);
+        }
+
+        /// <summary>
+        /// Unpatches all events.
+        /// </summary>
+        public static void UnpatchAll()
+        {
+            Patcher.UnpatchAll();
+        }
     }
 }

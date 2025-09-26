@@ -70,5 +70,4 @@ C:\Users\Administrator\source\repos\FMOD\bin\x64\Debug\UnityEngine.InputModule.d
 C:\Users\Administrator\source\repos\FMOD\bin\x64\Debug\UnityEngine.UIElementsModule.dll
 C:\Users\Administrator\source\repos\FMOD\bin\x64\Debug\UnityEngine.HierarchyCoreModule.dll
 C:\Users\Administrator\source\repos\FMOD\bin\x64\Debug\UnityEngine.JSONSerializeModule.dll
-C:\Users\Administrator\source\repos\FMOD\bin\x64\Debug\RueI.dll
 C:\Users\Administrator\source\repos\FMOD\bin\x64\Debug\0Harmony.dll

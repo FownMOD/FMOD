@@ -59,7 +59,8 @@ namespace FMOD.Commands.GAMECommand
 
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine($"------({pluginCount})个插件已加载------");
-
+                sb.AppendLine($"插件名字 - 插件简述 - 插件作者 - 插件版本");
+                sb.AppendLine($"---------------------------------------");
                 if (pluginCount == 0)
                 {
                     sb.AppendLine("  没有加载任何插件");

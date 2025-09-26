@@ -45,6 +45,10 @@ namespace FMOD.API
         public static List<Player> List = new List<Player>();
         public static List<Player> RemoteAdmins => Player.List.Where(x => x.RemoteAdminAccess).ToList();
         public static List<Player> DummyCount => Player.List.Where(x => x.IsDummy).ToList();
+        public Player(ReferenceHub referenceHub)
+        {
+            ReferenceHub = referenceHub;
+        }
         public static Player Get(RoleTypeId roleTypeId)
         {
             return List.FirstOrDefault(x => x.ReferenceHub.roleManager.CurrentRole.RoleTypeId == roleTypeId);
@@ -80,7 +84,10 @@ namespace FMOD.API
         public Role Role { get; }
         public int Id => ReferenceHub.PlayerId;
         public string UserId => ReferenceHub.authManager.UserId;
-        public GameObject GameObject => ReferenceHub.gameObject;
+        public GameObject GameObject
+        {
+            get => ReferenceHub.gameObject;
+        }
         public virtual Vector3 Position
         {
             get
@@ -209,7 +216,7 @@ namespace FMOD.API
         public FacilityZone Zone => CurrentRoom.Zone;
         public string DisplayName => ReferenceHub.nicknameSync.DisplayName;
         public string IP => ReferenceHub.characterClassManager.connectionToClient.address;
-        public IReadOnlyCollection<Item> Items { get; }
+        public IReadOnlyCollection<API.Items.Item> Items { get; }
         public Transform Camera => ReferenceHub.PlayerCameraReference;
         public bool IsNorthwoodStaff => ReferenceHub.authManager.NorthwoodStaff;
         public UserGroup UserGroup
@@ -277,7 +284,7 @@ namespace FMOD.API
             return this.ReferenceHub.playerEffectsController.ChangeState(effectName, intensity, duration, addDurationIfActive);
         }
         public bool IsHasItem(ItemType itemType) => Items.Any(x => x.Type == itemType);
-        public bool IsHasItem(Item item) => Items.Contains(item);
+        public bool IsHasItem(API.Items.Item item) => Items.Contains(item);
         public void Heal(float amount, bool overrideMaxHealth = false)
         {
             if (!overrideMaxHealth)
@@ -618,16 +625,6 @@ namespace FMOD.API
         public void ResumeAllAudio()
         {
             AudioManager.ResumeAudioForPlayer(ReferenceHub);
-        }
-        public bool IsPressKey(SimpleKeyBind simpleKeyBind)
-        {
-            bool B = IsConnected && simpleKeyBind.IsPressed();
-            return B;
-        }
-        public bool IsPressKey(KeyCode keyCode)
-        {
-            bool B = IsConnected && Input.GetKeyDown(keyCode);
-            return B;
         }
         public void ClearInventory()
         {

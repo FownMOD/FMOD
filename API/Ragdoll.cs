@@ -31,7 +31,7 @@ namespace FMOD.API
         public Vector2 Scale => RagdollData.Scale;
         public RoleTypeId RoleTypeId => RagdollData.RoleType;
         public Player Owner => Player.Get(RagdollData.OwnerHub);
-        public Vector3 Position => RagdollData.StartPosition;
+        public Vector3 Position => RagdollData.StartRelativePosition.Position;
         public GameObject GameObject => Base.gameObject;
         public bool Frozen
         {

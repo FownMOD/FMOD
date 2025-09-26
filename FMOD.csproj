@@ -157,7 +157,7 @@
     <Compile Include="API\DamageHandles\DamageBase.cs" />
     <Compile Include="API\Door.cs" />
     <Compile Include="API\Interface\IVoiceRole.cs" />
-    <Compile Include="API\Items\Firearm.cs" />
+    <Compile Include="API\Items\FirearmItem.cs" />
     <Compile Include="API\Items\Item.cs" />
     <Compile Include="API\Load.cs" />
     <Compile Include="API\Log.cs" />
@@ -173,7 +173,6 @@
     <Compile Include="API\Round.cs" />
     <Compile Include="API\Server.cs" />
     <Compile Include="API\ServerSpecific\SimpleKeyBind.cs" />
-    <Compile Include="API\ServerSpecific\SimpleKeyBindManager.cs" />
     <Compile Include="API\SSAudio\AudioFormat.cs" />
     <Compile Include="API\SSAudio\AudioManager.cs" />
     <Compile Include="API\SSAudio\AudioPlayer.cs" />
@@ -182,6 +181,7 @@
     <Compile Include="API\SSHint\DisplayManager.cs" />
     <Compile Include="API\SSHint\FMODTextElement.cs" />
     <Compile Include="Commands\GAMECommand\FMODCommand.cs" />
+    <Compile Include="Cores\EventPatchAttribute.cs" />
     <Compile Include="Enums\AudioType.cs" />
     <Compile Include="Enums\DamageType.cs" />
     <Compile Include="Enums\DoorName.cs" />
@@ -205,7 +205,6 @@
     <Compile Include="Events\Interfaces\IFMODEvent.cs" />
     <Compile Include="Events\Interfaces\IFMODPlayerEvent.cs" />
     <Compile Include="Events\Interfaces\IPlayerEvent.cs" />
-    <Compile Include="Events\Patchs\EventPatchs.cs" />
     <Compile Include="Events\Patchs\Patcher.cs" />
     <Compile Include="Extensions\ItemTypeExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />

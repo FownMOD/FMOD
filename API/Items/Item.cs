@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace FMOD.API.Items
 {
-    public class Item
+    public class Item:ItemBase
     {
         public static List<Item> List = new List<Item>();
         public static Item Get(ItemType type)
@@ -44,14 +44,15 @@ namespace FMOD.API.Items
         {
             return type.GetItemBase();
         }
-        public ItemBase ItemBase { get; set; }
-        public ItemType Type => ItemBase.ItemTypeId;
-        public ushort Serial => ItemBase.ItemSerial;
-        public GameObject GameObject => ItemBase.gameObject;
+        public ItemBase Base { get; set; }
+        public ItemType Type => Base.ItemTypeId;
+        public ushort Serial => Base.ItemSerial;
+        public GameObject GameObject => Base.gameObject;
         public Vector3 Scale => GameObject.transform.localScale;
-        public Player CurrentOwner => Player.Get(ItemBase.Owner);
-        public Vector3 Position => GameObject.transform.localPosition; 
-        
+        public Player CurrentOwner => Player.Get(Base.Owner);
+        public Vector3 Position => GameObject.transform.localPosition;
+
+        public override float Weight => Base.Weight;
 
         public void Spawn()
         {

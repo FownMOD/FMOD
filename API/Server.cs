@@ -11,6 +11,7 @@ namespace FMOD.API
 {
     public class Server
     {
+        public static Player Host { get; internal set; }
         public static int PlayerCount => Player.List.Count;
         public static int MaxPlayerCount => CustomNetworkManager.slots;
         public static int Port => ServerStatic.ServerPort;

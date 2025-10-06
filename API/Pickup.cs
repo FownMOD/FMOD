@@ -17,6 +17,10 @@ namespace FMOD.API
 {
     public class Pickup
     {
+        public Pickup(Vector3 position, ItemType itemType)
+        {
+            CreatAndSpawn(position, itemType);
+        }
         public static List<Pickup> List = new List<Pickup>();
         public static Pickup CreatAndSpawn(Vector3 position, ItemType itemType)
         {
@@ -26,7 +30,9 @@ namespace FMOD.API
                 return null;
             }
             ItemPickupBase itemPickupBase = InventorySystem.InventoryExtensions.ServerCreatePickup(itemBase, new PickupSyncInfo(itemType, itemBase.Weight), position);
-            return Get(itemPickupBase);
+            Pickup pickup = Get(itemPickupBase);
+            List.Add(pickup);
+            return pickup;
         }
         public static Pickup Get(ItemPickupBase itemPickupBase)
         {

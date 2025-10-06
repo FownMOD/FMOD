@@ -1,5 +1,4 @@
 ﻿using FMOD.API;
-using FMOD.Events.Patchs;
 using FMOD.Other;
 using HarmonyLib;
 using LabApi.Loader.Features.Plugins;
@@ -31,16 +30,13 @@ namespace FMOD
         public override Version Version => new Version(FMODVersion.MainVersion.ToString());
 
         public override Version RequiredApiVersion => new Version(1,0);
-        public Patcher Patcher { get; set; }
-        public int ServerPort { get; set; } = ServerStatic.ServerPort;
         public override void Enable()
         {
-            Events.Handlers.Player.RegisterAllLabEvents();
             Harmony harmony = new Harmony($"{Name}.{Version}");
+            harmony.PatchAll();
             Log.CustomInfo($"使用Harmony进行事件注册", UnityEngine.Color.blue);
             try
             {
-                PatcherAccess.PatchAll();
                 Log.CustomInfo($"===>{Name}.{Version}注册成功<===", UnityEngine.Color.blue);
             }
             catch(Exception e)
@@ -48,8 +44,8 @@ namespace FMOD
                 Log.Error($"注册失败");
                 Log.Error(e.Message.ToString());
             }
-            Paths.GenerateFoldersAndFiles(ServerPort);
-            Load.LoadAllPlugins(ServerPort);
+            Paths.GenerateFoldersAndFiles(Server.Port);
+            Load.LoadAllPlugins(Server.Port);
             Permissions.Initialize();
             Log.Debug($"欢迎使用FMOD");
             Log.Debug($"{LogMsg.FMOD}");
@@ -57,7 +53,6 @@ namespace FMOD
         }
         public override void Disable()
         {
-            Events.Handlers.Player.UnRegisterAllLabEvents();
             Load.DisableAllPlugins();
             Log.CustomInfo($"FMOD已被禁用", UnityEngine.Color.red);
             Log.Debug($"{LogMsg.FMOD}");

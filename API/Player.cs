@@ -5,7 +5,6 @@ using CustomPlayerEffects;
 using FMOD.API.Roles;
 using FMOD.API.ServerSpecific;
 using FMOD.API.SSAudio;
-using FMOD.API.SSHint;
 using FMOD.Extensions;
 using Footprinting;
 using Hints;
@@ -25,7 +24,6 @@ using PlayerRoles.FirstPersonControl.Thirdperson.Subcontrollers;
 using PlayerRoles.Voice;
 using PlayerStatsSystem;
 using RemoteAdmin;
-using RueI.Elements;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -80,6 +78,10 @@ namespace FMOD.API
             return List.FirstOrDefault(x => x.ReferenceHub == referenceHub);
         }
         public ReferenceHub ReferenceHub;
+        public Footprint Footprint
+        {
+            get => ReferenceHub.GetComponent<Footprint>();
+        }
         public Transform Transform => ReferenceHub.transform;
         public Role Role { get; }
         public int Id => ReferenceHub.PlayerId;
@@ -581,10 +583,6 @@ namespace FMOD.API
                 (parameters2 = new HintParameter[1])[0] = new StringHintParameter(string.Empty);
             }
             hints.Show(new TextHint(text, parameters2, effects, duration));
-        }
-        public void SendHint(string msg, float ShowTime, float Y)
-        {
-            DisplayManager.ShowForPlayer(msg, Y, ShowTime, ReferenceHub);
         }
         public NetworkConnection Connection
         {

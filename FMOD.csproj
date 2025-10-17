@@ -153,7 +153,9 @@
   <ItemGroup>
     <Compile Include="API\DamageHandles\DamageBase.cs" />
     <Compile Include="API\Door.cs" />
+    <Compile Include="API\DummyBase.cs" />
     <Compile Include="API\Interface\IVoiceRole.cs" />
+    <Compile Include="API\Items\CustomItem.cs" />
     <Compile Include="API\Items\FirearmItem.cs" />
     <Compile Include="API\Items\Item.cs" />
     <Compile Include="API\Items\UseItem.cs" />
@@ -182,6 +184,10 @@
     <Compile Include="Enums\DoorName.cs" />
     <Compile Include="Enums\KeycardPermissions.cs" />
     <Compile Include="Enums\PlaybackState.cs" />
+    <Compile Include="Events\EventArgs\Dummy\Create.cs" />
+    <Compile Include="Events\EventArgs\Dummy\Destroy.cs" />
+    <Compile Include="Events\EventArgs\Pickup\Create.cs" />
+    <Compile Include="Events\EventArgs\Pickup\Desroy.cs" />
     <Compile Include="Events\EventArgs\Player\ChangingItemArgs.cs" />
     <Compile Include="Events\EventArgs\Player\ChangingRoleArgs.cs" />
     <Compile Include="Events\EventArgs\Player\EscapingPocketDimensionEventArgs.cs" />
@@ -192,6 +198,8 @@
     <Compile Include="Events\EventArgs\Player\PlayerLeftArgs.cs" />
     <Compile Include="Events\EventArgs\Player\PlayerPickingArgs.cs" />
     <Compile Include="Events\EventArgs\Player\ShootingEventArgs.cs" />
+    <Compile Include="Events\Handlers\Dummy.cs" />
+    <Compile Include="Events\Handlers\Pickup.cs" />
     <Compile Include="Events\Handlers\Player.cs" />
     <Compile Include="Events\EventArgs\Player\PlayerJoinArgs.cs" />
     <Compile Include="Events\Interfaces\Event.cs" />
@@ -219,6 +227,8 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Events\EventArgs\Item\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

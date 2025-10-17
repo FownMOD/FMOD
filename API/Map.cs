@@ -1,4 +1,5 @@
 ﻿using FMOD.API.Items;
+using LightContainmentZoneDecontamination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace FMOD.API
         public static List<Item> Items = new List<Item>();
         public static List<Room> Rooms = new List<Room>();
         public static List<Pickup> Pickups = new List<Pickup>();
+        public static DecontaminationController decontaminationController {  get; set; }
         public static void ChangRoomColor(Room room, UnityEngine.Color color)
         {
             room.RoomLightController.NetworkOverrideColor = color;

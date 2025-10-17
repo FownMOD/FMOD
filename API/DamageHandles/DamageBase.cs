@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YamlDotNet.Core.Tokens;
 
 namespace FMOD.API.DamageHandles
 {
@@ -21,7 +22,17 @@ namespace FMOD.API.DamageHandles
         public override string ServerLogsText { get; }
 
         public override string ServerMetricsText { get; }
-
+        public HitboxType HitboxType
+        {
+            get
+            {
+                return As<FirearmDamageHandler>().Hitbox;
+            }
+            set
+            {
+                As<FirearmDamageHandler>().Hitbox = value;
+            }
+        }
         public override CassieAnnouncement CassieDeathAnnouncement { get; }
 
         public override HandlerOutput ApplyDamage(ReferenceHub ply)
@@ -103,8 +114,8 @@ namespace FMOD.API.DamageHandles
                 }
             }
         }
-        private DamageType damageType;
 
+        private DamageType damageType;
         public DamageType Type
         {
             get

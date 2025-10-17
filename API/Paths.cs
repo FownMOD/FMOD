@@ -16,6 +16,7 @@ namespace FMOD.API
         public static readonly string ConfigDir = System.IO.Path.Combine(BaseDir, "Config");
         public static readonly string PermissionsPath = System.IO.Path.Combine(ConfigDir, "Permissions.yaml");
         public static readonly string Translation = System.IO.Path.Combine(ConfigDir, "Translation");
+        public static readonly string CustomItem = System.IO.Path.Combine(ConfigDir,"CustomItem");
         public static string GetPluginsDir(int serverPort)
         {
             return System.IO.Path.Combine(BaseDir, "Plugins", serverPort.ToString());

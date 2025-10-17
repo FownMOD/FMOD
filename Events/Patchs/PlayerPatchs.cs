@@ -1,4 +1,5 @@
-﻿using FMOD.API.DamageHandles;
+﻿using FMOD.API;
+using FMOD.API.DamageHandles;
 using FMOD.API.Items;
 using FMOD.Events.EventArgs.Player;
 using HarmonyLib;
@@ -22,7 +23,12 @@ namespace FMOD.Events.Patchs
             static void Prefix(PlayerJoinedEventArgs ev)
             {
                 PlayerJoinArgs playerJoinArgs = new PlayerJoinArgs(ev.Player.ReferenceHub);
-                Handlers.Player.OnPlayerJoined(playerJoinArgs);
+                Handlers.Player.OnPlayerJoined(playerJoinArgs); 
+                if (ev.Player.ReferenceHub.TryGetComponent<DummyBase>(out var component))
+                {
+                    EventArgs.Dummy.Create Create = new EventArgs.Dummy.Create(ev.Player.ReferenceHub);
+                    Handlers.Dummy.OnCreate(Create);
+                }
             }
         }
         [HarmonyPatch(typeof(LabApi.Events.Handlers.PlayerEvents), nameof(LabApi.Events.Handlers.PlayerEvents.OnLeft))]
@@ -32,6 +38,11 @@ namespace FMOD.Events.Patchs
             {
                 PlayerLeftArgs playerLeftArgs = new PlayerLeftArgs(ev.Player.ReferenceHub);
                 Handlers.Player.OnPlayerLeft(playerLeftArgs);
+                if (ev.Player.ReferenceHub.TryGetComponent<DummyBase>(out var component))
+                {
+                    EventArgs.Dummy.Destroy destroy = new EventArgs.Dummy.Destroy(ev.Player.ReferenceHub);
+                    Handlers.Dummy.OnDestroy(destroy);
+                }
             }
         }
         [HarmonyPatch(typeof(LabApi.Events.Handlers.PlayerEvents), nameof(LabApi.Events.Handlers.PlayerEvents.OnEscaping))]

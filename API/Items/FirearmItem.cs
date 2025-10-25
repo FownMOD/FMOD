@@ -22,7 +22,7 @@ namespace FMOD.API.Items
         public new Vector3 Position => Base.gameObject.transform.position;
         public Quaternion Rotation => Base.gameObject.transform.rotation;
         public new Vector3 Scale => Base.gameObject.transform.localScale;
-        public API.Player Owner
+        public new API.Player Owner
         {
             get
             {
@@ -59,6 +59,6 @@ namespace FMOD.API.Items
                 return Base.GetTotalMaxAmmo();
             }
         }
-        public InventorySystem.Items.Firearms.Firearm Base { get; }
+        public new InventorySystem.Items.Firearms.Firearm Base { get; }
     }
 }

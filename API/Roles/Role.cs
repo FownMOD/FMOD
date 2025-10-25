@@ -8,17 +8,16 @@ using UnityEngine;
 
 namespace FMOD.API.Roles
 {
-    public class Role
+    public class Role:PlayerRoleBase
     {
-        public RoleTypeId RoleTypeId => Base.RoleTypeId;
-        public string RoleName => Base.RoleName;
-        public Color RoleColor => Base.RoleColor;
+        public override RoleTypeId RoleTypeId => Base.RoleTypeId;
+        public new string RoleName => Base.RoleName;
+        public override  Color RoleColor => Base.RoleColor;
         public PlayerRoleBase Base { get; }
-        public Team Team => Base.Team;
+        public override Team Team => Base.Team;
         public Player Owner { get; }
         public RoleChangeReason SpawnReason => Base.ServerSpawnReason;
         public RoleSpawnFlags SpawnFlags => Base.ServerSpawnFlags;
-
         public Role(Player owner, PlayerRoleBase roleBase)
         {
             Owner = owner ?? throw new ArgumentNullException(nameof(owner));

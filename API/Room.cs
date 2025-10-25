@@ -58,6 +58,10 @@ namespace FMOD.API
         {
             return List.First(x => x.Position == Position);
         }
+        public static Room GetRoom(RoomIdentifier identifier)
+        {
+            return List.FirstOrDefault(x => x.RoomIdentifier == identifier);
+        }
         public static Room GetRoom(RoomShape roomShape)
         {
             return List.First(x => x.RoomShape == roomShape);

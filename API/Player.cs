@@ -2,9 +2,11 @@
 using CommandSystem;
 using CommandSystem.Commands.RemoteAdmin.Dms;
 using CustomPlayerEffects;
+using Discord;
 using FMOD.API.Roles;
 using FMOD.API.ServerSpecific;
 using FMOD.API.SSAudio;
+using FMOD.Events.Handlers;
 using FMOD.Extensions;
 using Footprinting;
 using Hints;
@@ -156,9 +158,14 @@ namespace FMOD.API
         {
             ReferenceHub.inventory.ServerAddItem(itemType, InventorySystem.Items.ItemAddReason.AdminCommand);
         }
-        public void AddItem(ItemType itemType, InventorySystem.Items.ItemAddReason reason)
+        public API.Items.Item AddItem(ItemType itemType, InventorySystem.Items.ItemAddReason reason)
         {
-            ReferenceHub.inventory.ServerAddItem(itemType, reason);
+            LabApi.Features.Wrappers.Item item = LabApi.Features.Wrappers.Item.Get(ReferenceHub.inventory.ServerAddItem(itemType, InventorySystem.Items.ItemAddReason.AdminCommand));
+            return API.Items.Item.Get(item.Base);
+        }
+        public RoundPlayerHistory.PlayerHistoryLog GetData()
+        {
+            return RoundPlayerHistory.singleton.GetData(Id);
         }
         public void DisableAllEffects()
         {

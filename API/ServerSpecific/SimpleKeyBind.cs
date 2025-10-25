@@ -24,6 +24,12 @@ namespace FMOD.API.ServerSpecific
             Hint = hint;
             CollectionId = collectionId;
         }
+        public static SimpleKeyBind Create(int? id, string label, KeyCode suggestedKey = UnityEngine.KeyCode.None, bool preventInteractionOnGui = true, bool allowSpectatorTrigger = true, string hint = null, byte collectionId = 255)
+        {
+            SimpleKeyBind simpleKeyBind = new SimpleKeyBind(id, label, suggestedKey , preventInteractionOnGui,allowSpectatorTrigger,hint, collectionId);
+            return simpleKeyBind;
+
+        }
         public static void SendToPlayer(ReferenceHub referenceHub, SimpleKeyBind simpleKeyBind)
         {
             if (!SimpleKeyList.ContainsValue(simpleKeyBind))

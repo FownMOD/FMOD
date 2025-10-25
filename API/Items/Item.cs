@@ -28,23 +28,19 @@ namespace FMOD.API.Items
             {
                 return null;
             }
-            Firearm firearm = itemBase as Firearm;
-            Item result2;
-            if (firearm == null)
-            {
-                result2 = null;
-            }
-            else
-            {
-                result2 = new API.Items.FirearmItem(firearm);
-            }
-            return result2;
+            return itemBase as Item;
         }
+        public void SetWeight(float value)
+        {
+            Base.gameObject.GetComponent<Rigidbody>().mass = value;
+        }
+
         public static ItemBase GetItemBase(ItemType type)
         {
             return type.GetItemBase();
         }
         public ItemBase Base { get; set; }
+        public ItemCategory ItemCategory => Base.Category;
         public ItemType Type => Base.ItemTypeId;
         public ushort Serial => Base.ItemSerial;
         public GameObject GameObject => Base.gameObject;
@@ -54,6 +50,8 @@ namespace FMOD.API.Items
 
         public override float Weight => Base.Weight;
 
+        public float GetWeight()
+        { return Base.Weight; }
         public void Spawn()
         {
             NetworkServer.Spawn(this.GameObject);

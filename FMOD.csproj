@@ -151,6 +151,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\AdminToys\AdminToy.cs" />
+    <Compile Include="API\AdminToys\CameraToy.cs" />
+    <Compile Include="API\AdminToys\Capybara.cs" />
+    <Compile Include="API\AdminToys\InteractableToy.cs" />
+    <Compile Include="API\AdminToys\LightToy.cs" />
+    <Compile Include="API\AdminToys\Primitive.cs" />
+    <Compile Include="API\AdminToys\ShootingTargetToy.cs" />
+    <Compile Include="API\AdminToys\Speaker.cs" />
+    <Compile Include="API\AdminToys\Text.cs" />
+    <Compile Include="API\AdminToys\Waypoint.cs" />
     <Compile Include="API\DamageHandles\DamageBase.cs" />
     <Compile Include="API\Door.cs" />
     <Compile Include="API\DummyBase.cs" />
@@ -158,6 +168,7 @@
     <Compile Include="API\Items\CustomItem.cs" />
     <Compile Include="API\Items\FirearmItem.cs" />
     <Compile Include="API\Items\Item.cs" />
+    <Compile Include="API\Items\KeyCardItem.cs" />
     <Compile Include="API\Items\UseItem.cs" />
     <Compile Include="API\Load.cs" />
     <Compile Include="API\Log.cs" />
@@ -168,6 +179,7 @@
     <Compile Include="API\Player.cs" />
     <Compile Include="API\Ragdoll.cs" />
     <Compile Include="API\Respawn.cs" />
+    <Compile Include="API\Roles\FpcRole.cs" />
     <Compile Include="API\Roles\Role.cs" />
     <Compile Include="API\Room.cs" />
     <Compile Include="API\Round.cs" />

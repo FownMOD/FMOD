@@ -10,13 +10,13 @@ namespace FMOD.Events.EventArgs.Player
 {
     public class PlayerPickingArgs : System.EventArgs, IFMODPlayerEvent
     {
-        public PlayerPickingArgs(ReferenceHub player, Pickup pickup)
+        public PlayerPickingArgs(ReferenceHub player, API.Pickup pickup)
         {
             Pickup = pickup;
             Player = API.Player.Get(player);
             IsAllowed = true;
         }
-        public Pickup Pickup { get; set; }
+        public API.Pickup Pickup { get; set; }
         public API.Player Player {  get; set; }
         public bool IsAllowed { get; set; }
     }

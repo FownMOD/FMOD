@@ -99,5 +99,18 @@ namespace FMOD.API
                 ServerConsole.FriendlyFire = value;
             }
         }
+        public static string PlayerListName
+        {
+            get
+            {
+                return PlayerList.Title.Value;
+            }
+            set
+            {
+                PlayerList.Title.Value = value;
+            }
+        }
+        public static ServerStatic.NextRoundAction StopNextRound => ServerStatic.StopNextRound;
+
     }
 }

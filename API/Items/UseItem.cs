@@ -15,19 +15,7 @@ namespace FMOD.API.Items
         {
             Base = usable;
         }
-        internal UseItem(ItemType type) : this((UsableItem)Server.Host.Inventory.CreateItemInstance(new ItemIdentifier(type, 0), false))
-        {
-        }
         public new UsableItem Base { get; }
-        public float GetWeight()
-        {
-            return Base.Weight;
-        }
-        public void SetWeight(float value)
-        {
-            Base.gameObject.GetComponent<Rigidbody>().mass = value;
-        }
-
         public bool IsUsing => Base.IsUsing;
         public float UseTime
         {

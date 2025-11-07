@@ -53,7 +53,7 @@ namespace FMOD.API
         public static List<ReferenceHub> ReferenceHubs = new List<ReferenceHub>();
         public static List<Player> List = new List<Player>();
         public static List<Player> RemoteAdmins => Player.List.Where(x => x.RemoteAdminAccess).ToList();
-        public static List<Player> DummyCount => Player.List.Where(x => x.IsDummy).ToList();
+        public static int DummyCount => ReferenceHub.GetPlayerCount(ClientInstanceMode.Dummy);
         public Player(ReferenceHub referenceHub)
         {
             ReferenceHub = referenceHub;

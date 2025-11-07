@@ -20,88 +20,106 @@ namespace FMOD.Events.Patchs
         [HarmonyPatch(typeof(LabApi.Events.Handlers.PlayerEvents), nameof(LabApi.Events.Handlers.PlayerEvents.OnJoined))]
         public class PlayerJoined
         {
-            static void Prefix(PlayerJoinedEventArgs ev)
+            static bool Prefix(PlayerJoinedEventArgs ev)
             {
                 PlayerJoinArgs playerJoinArgs = new PlayerJoinArgs(ev.Player.ReferenceHub);
-                Handlers.Player.OnPlayerJoined(playerJoinArgs); 
+                Handlers.Player.OnPlayerJoined(playerJoinArgs);
+
                 if (ev.Player.ReferenceHub.TryGetComponent<DummyBase>(out var component))
                 {
                     EventArgs.Dummy.Create Create = new EventArgs.Dummy.Create(ev.Player.ReferenceHub);
                     Handlers.Dummy.OnCreate(Create);
                 }
+
+                return true; 
             }
         }
+
         [HarmonyPatch(typeof(LabApi.Events.Handlers.PlayerEvents), nameof(LabApi.Events.Handlers.PlayerEvents.OnLeft))]
         public class PlayerLeft
         {
-            static void Prefix(PlayerLeftEventArgs ev)
+            static bool Prefix(PlayerLeftEventArgs ev)
             {
                 PlayerLeftArgs playerLeftArgs = new PlayerLeftArgs(ev.Player.ReferenceHub);
                 Handlers.Player.OnPlayerLeft(playerLeftArgs);
+
                 if (ev.Player.ReferenceHub.TryGetComponent<DummyBase>(out var component))
                 {
                     EventArgs.Dummy.Destroy destroy = new EventArgs.Dummy.Destroy(ev.Player.ReferenceHub);
                     Handlers.Dummy.OnDestroy(destroy);
                 }
+
+                return true;
             }
         }
+
         [HarmonyPatch(typeof(LabApi.Events.Handlers.PlayerEvents), nameof(LabApi.Events.Handlers.PlayerEvents.OnEscaping))]
         public class PlayerEscing
         {
-            static void Prefix(PlayerEscapingEventArgs ev)
+            static bool Prefix(PlayerEscapingEventArgs ev)
             {
                 PlayerEscapeingArgs playerEscapeingArgs = new PlayerEscapeingArgs(ev.Player.ReferenceHub, ev.NewRole, ev.EscapeScenario);
                 Handlers.Player.OnPlayerEscapeing(playerEscapeingArgs);
+                return true; 
             }
         }
+
         [HarmonyPatch(typeof(PlayerEvents), nameof(PlayerEvents.OnDroppingItem))]
         static class DroppingItem
         {
-            static void Prefix(PlayerDroppingItemEventArgs ev)
+            static bool Prefix(PlayerDroppingItemEventArgs ev)
             {
                 PlayerDroppingArgs playerDroppingArgs = new PlayerDroppingArgs(ev.Player.ReferenceHub, Item.Get(ev.Item.Base));
                 Handlers.Player.OnPlayerDropping(playerDroppingArgs);
+                return true; 
             }
         }
+
         [HarmonyPatch(typeof(PlayerEvents), nameof(PlayerEvents.OnLeftPocketDimension))]
         static class LeftPocketDimension
         {
-            static void Prefix(PlayerLeftPocketDimensionEventArgs ev)
+            static bool Prefix(PlayerLeftPocketDimensionEventArgs ev)
             {
                 EscapingPocketDimensionEventArgs escapingPocketDimensionEventArgs = new EscapingPocketDimensionEventArgs(ev.Teleport.Base, ev.Player.ReferenceHub);
                 Handlers.Player.OnPlayerEscapingPocketDimension(escapingPocketDimensionEventArgs);
+                return true;
             }
         }
 
         [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.DealDamage))]
         public class PlayerDiedAndHurting
         {
-            static void Prefix(DamageHandlerBase handler)
+            static bool Prefix(DamageHandlerBase handler)
             {
-                DamageHandlerBase damageBase = handler;
-                DamageBase damage = damageBase as DamageBase;
-                DamageHandlerBase.HandlerOutput handlerOutput = damageBase.ApplyDamage(damage.Target.ReferenceHub);
-                if (handlerOutput == DamageHandlerBase.HandlerOutput.Death)
+                if (handler is DamageBase damage)
                 {
-                    PlayerDiedEventsArgs playerDiedEvents = new PlayerDiedEventsArgs(damage.Target.ReferenceHub, damageBase);
-                    Handlers.Player.OnPlayerDied(playerDiedEvents);
+                    DamageHandlerBase.HandlerOutput handlerOutput = handler.ApplyDamage(damage.Target.ReferenceHub);
+
+                    if (handlerOutput == DamageHandlerBase.HandlerOutput.Death)
+                    {
+                        PlayerDiedEventsArgs playerDiedEvents = new PlayerDiedEventsArgs(damage.Target.ReferenceHub, handler);
+                        Handlers.Player.OnPlayerDied(playerDiedEvents);
+                    }
+                    else if (handlerOutput == DamageHandlerBase.HandlerOutput.Damaged)
+                    {
+                        HurtingEventArgs hurtingEventArgs = new HurtingEventArgs(damage.Target.ReferenceHub, handler);
+                        Handlers.Player.OnPlayerHurting(hurtingEventArgs);
+                    }
                 }
-                if (handlerOutput == DamageHandlerBase.HandlerOutput.Damaged)
-                {
-                    HurtingEventArgs hurtingEventArgs = new HurtingEventArgs(damage.Target.ReferenceHub, damageBase);
-                    Handlers.Player.OnPlayerHurting(hurtingEventArgs);
-                }
-            }
-        }
-        [HarmonyPatch(typeof(LabApi.Events.Handlers.PlayerEvents), nameof(LabApi.Events.Handlers.PlayerEvents.OnChangingRole))]
-        public class PlayerChangingRole
-        {
-            static void Prefix(PlayerChangingRoleEventArgs ev)
-            {
-                ChangingRoleArgs changingRoleArgs = new ChangingRoleArgs(ev.Player.ReferenceHub);
-                Handlers.Player.OnPlayerChangingRole(changingRoleArgs);
+
+                return true;
             }
         }
 
+        [HarmonyPatch(typeof(LabApi.Events.Handlers.PlayerEvents), nameof(LabApi.Events.Handlers.PlayerEvents.OnChangingRole))]
+        public class PlayerChangingRole
+        {
+            static bool Prefix(PlayerChangingRoleEventArgs ev)
+            {
+                ChangingRoleArgs changingRoleArgs = new ChangingRoleArgs(ev.Player.ReferenceHub);
+                Handlers.Player.OnPlayerChangingRole(changingRoleArgs);
+                return true; 
+            }
+        }
     }
 }

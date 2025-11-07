@@ -37,12 +37,14 @@ namespace FMOD.Plugins
         /// 插件配置类型
         /// </summary>
         public virtual Type ConfigType { get; } = null;
+        public Events.Handlers.Player PlayerEvents { get; set; }
+        public Events.Handlers.Pickup PickupEvents { get; set; }
+        public Events.Handlers.Dummy DummyEvents { get; set; }
 
         /// <summary>
         /// 插件配置实例
         /// </summary>
-        public object Config { get; private set; }
-
+        public object Config { get; set; }
         /// <summary>
         /// 初始化插件
         /// </summary>

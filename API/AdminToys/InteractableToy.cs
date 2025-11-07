@@ -1,4 +1,5 @@
 ﻿using AdminToys;
+using FMOD.Enums;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -76,5 +77,7 @@ namespace FMOD.API.AdminToys
 
             }
         }
+
+        public override AdminToyType AdminToyType => AdminToyType.Interactable;
     }
 }

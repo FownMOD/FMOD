@@ -1,4 +1,5 @@
 ﻿using AdminToys;
+using FMOD.Enums;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -100,6 +101,6 @@ namespace FMOD.API.AdminToys
         {
             this.Color = Color;
         }
-
+        public override AdminToyType AdminToyType => AdminToyType.Primitive;
     }
 }

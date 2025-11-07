@@ -1,5 +1,6 @@
 ﻿using AdminToys;
 using FMOD.API.DamageHandles;
+using FMOD.Enums;
 using Interactables.Verification;
 using Mirror;
 using System;
@@ -13,6 +14,7 @@ namespace FMOD.API.AdminToys
 {
     public class ShootingTargetToy : AdminToy
     {
+        public override AdminToyType AdminToyType => AdminToyType.ShootingTarget;
         public ShootingTargetToy(ShootingTarget adminToyBase) : base(adminToyBase)
         {
             this.Base = adminToyBase;

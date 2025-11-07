@@ -1,4 +1,5 @@
 ﻿using AdminToys;
+using FMOD.Enums;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -64,5 +65,7 @@ namespace FMOD.API.AdminToys
             }
         }
         public new CapybaraToy Base { get; }
+
+        public override AdminToyType AdminToyType => AdminToyType.Capybara;
     }
 }

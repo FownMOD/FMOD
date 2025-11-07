@@ -1,4 +1,5 @@
 ﻿using AdminToys;
+using FMOD.Enums;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace FMOD.API.AdminToys
 {
     public class Waypoint : AdminToy
     {
+        public override AdminToyType AdminToyType => AdminToyType.Waypoint;
         public Waypoint(WaypointToy adminToyBase) : base(adminToyBase)
         {
             this.Base = adminToyBase;

@@ -1,4 +1,5 @@
 ﻿using AdminToys;
+using FMOD.Enums;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -57,5 +58,6 @@ namespace FMOD.API.AdminToys
                 this.Base.Network_displaySize = value;
             }
         }
+        public override AdminToyType AdminToyType => AdminToyType.Text;
     }
 }

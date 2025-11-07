@@ -24,6 +24,24 @@ namespace FMOD.API
         {
             return !string.IsNullOrEmpty(value) && (value.Contains("@") ? BanHandler.GetBan(value, BanHandler.BanType.UserId) : BanHandler.GetBan(value, BanHandler.BanType.IP)) != null;
         }
+        public static void AddReservedSlotPlayer(string UserId)
+        {
+            ReservedSlot.Users.Add(UserId);
+            ReservedSlot.Reload();
+        }
+        public static bool IsReservedSlotUser(string UserId)
+        {
+            if (!ReservedSlot.HasReservedSlot(UserId))
+            {
+                return false;
+            }
+            return true;
+        }
+        public static void RemoveReservedSlotUser(string UserId)
+        {
+            ReservedSlot.Users.Remove(UserId);
+            ReservedSlot.Reload();
+        }
         public static bool UnbanIpAddress(string ipAddress)
         {
             if (string.IsNullOrEmpty(ipAddress) || !Server.IsPlayerBanned(ipAddress))
@@ -110,7 +128,7 @@ namespace FMOD.API
                 PlayerList.Title.Value = value;
             }
         }
-        public static ServerStatic.NextRoundAction StopNextRound => ServerStatic.StopNextRound;
-
+        public static string RunCommand(string command, CommandSender sender = null) =>
+        ServerConsole.EnterCommand(command, sender);
     }
 }

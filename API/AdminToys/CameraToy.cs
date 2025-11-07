@@ -1,5 +1,6 @@
 ﻿using AdminToys;
 using FMOD.API.Interface;
+using FMOD.Enums;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -98,5 +99,7 @@ namespace FMOD.API.AdminToys
                 this.Base.NetworkZoomConstraint = value;
             }
         }
+
+        public override AdminToyType AdminToyType { get;} = AdminToyType.Camera;
     }
 }

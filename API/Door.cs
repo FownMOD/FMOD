@@ -41,7 +41,6 @@ namespace FMOD.API
             }
             set
             {
-                NetworkServer.UnSpawn(this.GameObject);
                 this.GameObject.transform.rotation = value;
                 NetworkServer.Spawn(this.GameObject);
             }
@@ -57,7 +56,6 @@ namespace FMOD.API
             }
             set
             {
-                NetworkServer.UnSpawn(this.GameObject);
                 this.GameObject.transform.localScale = value;
                 NetworkServer.Spawn(this.GameObject);
             }

@@ -1,4 +1,5 @@
 ﻿using AdminToys;
+using FMOD.Enums;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace FMOD.API.AdminToys
 {
     public class Speaker : AdminToy
     {
+        public override AdminToyType AdminToyType => AdminToyType.Speaker;
         public Speaker(SpeakerToy adminToyBase) : base(adminToyBase)
         {
             this.Base = adminToyBase;

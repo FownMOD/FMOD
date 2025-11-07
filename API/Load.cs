@@ -1,4 +1,5 @@
-﻿using FMOD.Plugins;
+﻿using FMOD.API.Attributes;
+using FMOD.Plugins;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,8 +15,9 @@ namespace FMOD.API
 {
     public class Load
     {
-        private static List<Plugin> loadedPlugins = new List<Plugin>();
+        public static List<Plugin> loadedPlugins = new List<Plugin>();
         private static Dictionary<string, object> pluginConfigs = new Dictionary<string, object>();
+
         public static void LoadAllPlugins(int serverPort)
         {
             string pluginsDir = Paths.GetPluginsDir(serverPort);
@@ -31,6 +33,7 @@ namespace FMOD.API
             // 加载插件
             LoadPlugins(pluginsDir, serverPort);
         }
+
         /// <summary>
         /// 加载所有依赖项
         /// </summary>
@@ -55,7 +58,8 @@ namespace FMOD.API
                 }
             }
         }
-        private static void LoadPlugins(string pluginsDir, int serverPort)
+
+        public static void LoadPlugins(string pluginsDir, int serverPort)
         {
             if (!Directory.Exists(pluginsDir))
             {
@@ -98,6 +102,7 @@ namespace FMOD.API
                     {
                         foreach (var loaderEx in typeLoadEx.LoaderExceptions)
                         {
+                            Log.Debug($"[FMOD] 类型加载异常: {loaderEx?.Message}");
                         }
                     }
                 }
@@ -106,7 +111,8 @@ namespace FMOD.API
             // 启用所有插件
             EnableAllPlugins();
         }
-        private static void LoadPluginsFromAssembly(Assembly assembly, int serverPort)
+
+        public static void LoadPluginsFromAssembly(Assembly assembly, int serverPort)
         {
             Type[] types = null;
             try
@@ -119,10 +125,12 @@ namespace FMOD.API
                 types = ex.Types;
                 foreach (var loaderEx in ex.LoaderExceptions)
                 {
+                    Log.Debug($"[FMOD] 类型加载异常: {loaderEx?.Message}");
                 }
             }
             catch (Exception ex)
             {
+                Log.Debug($"[FMOD] 获取程序集类型失败: {ex.Message}");
                 return;
             }
 
@@ -135,53 +143,278 @@ namespace FMOD.API
                 {
                     if (type == null) continue;
 
-                    // 检查是否是 Plugin 的子类且不是抽象类
-                    if (type.IsSubclassOf(typeof(Plugin)) && !type.IsAbstract)
+                    // 首先尝试基于特性的插件系统
+                    if (AttributeHelper.ValidatePluginType(type))
                     {
-                        Plugin plugin = null;
-                        try
-                        {
-                            plugin = (Plugin)Activator.CreateInstance(type);
-                        }
-                        catch (MissingMethodException)
-                        {
-                            continue;
-                        }
-                        catch (Exception ex)
-                        {
-                            continue;
-                        }
-
-                        object config = LoadPluginConfig(plugin, serverPort);
-                        bool isEnabled = CheckPluginEnabled(config, plugin);
-
-                        if (!isEnabled)
-                        {
-                            Log.Debug($"[FMOD] 插件已禁用: {plugin.Name}");
-                            continue;
-                        }
-
-                        try
-                        {
-                            plugin.Initialize(serverPort, config);
-                            loadedPlugins.Add(plugin);
-                            pluginConfigs[plugin.Name] = config;
-
-                            Log.Debug($"[FMOD] 已加载插件: {plugin.Name} v{plugin.Version} by {plugin.Author}");
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Debug($"[FMOD] 初始化插件失败: {plugin.Name}, 错误: {ex.Message}");
-                        }
+                        LoadPluginByAttributes(type, serverPort);
+                    }
+                    // 然后尝试传统的 Plugin 基类系统
+                    else if (type.IsSubclassOf(typeof(Plugin)) && !type.IsAbstract)
+                    {
+                        LoadPluginByBaseClass(type, serverPort);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Debug($"[FMOD] 处理类型失败: {type?.FullName ?? "null"}, 错误: {ex.Message}");
+                    Log.Debug($"[FMOD] 处理插件类型失败: {type?.FullName}, 错误: {ex.Message}");
                 }
             }
         }
 
+        public static void LoadPluginByAttributes(Type type, int serverPort)
+        {
+            // 获取插件信息
+            var pluginInfo = AttributeHelper.GetPluginInfo(type);
+            Console.WriteLine($"[FMOD] 找到插件: {pluginInfo.Summary}");
+
+            // 创建插件实例
+            var plugin = Activator.CreateInstance(type);
+
+            // 加载配置
+            var (configProperty, configAttribute) = AttributeHelper.GetPluginConfigProperty(type);
+            if (configProperty != null)
+            {
+                object config = LoadPluginConfigForAttribute(plugin, configProperty, configAttribute, serverPort);
+                configProperty.SetValue(plugin, config);
+            }
+
+            // 检查是否启用
+            bool isEnabled = CheckPluginEnabledForAttribute(plugin, configProperty);
+            if (!isEnabled)
+            {
+                Console.WriteLine($"[FMOD] 插件已禁用: {pluginInfo.Name}");
+                return;
+            }
+
+            // 执行启用方法
+            var enabledMethods = AttributeHelper.GetEnabledMethods(type);
+            foreach (var (method, attribute) in enabledMethods)
+            {
+                ExecutePluginMethod(plugin, method, attribute);
+            }
+
+            // 如果插件也继承自 Plugin 基类，添加到加载列表
+            if (plugin is Plugin basePlugin)
+            {
+                loadedPlugins.Add(basePlugin);
+                pluginConfigs[basePlugin.Name] = configProperty?.GetValue(plugin);
+            }
+
+            Console.WriteLine($"[FMOD] 已加载插件: {pluginInfo.Name}");
+        }
+
+        public static void LoadPluginByBaseClass(Type type, int serverPort)
+        {
+            Plugin plugin = null;
+            try
+            {
+                plugin = (Plugin)Activator.CreateInstance(type);
+            }
+            catch (Exception ex)
+            {
+                Log.Debug($"[FMOD] 创建插件实例失败: {type.Name}, 错误: {ex.Message}");
+                return;
+            }
+
+            object config = LoadPluginConfig(plugin, serverPort);
+            bool isEnabled = CheckPluginEnabled(config, plugin);
+
+            if (!isEnabled)
+            {
+                Log.Debug($"[FMOD] 插件已禁用: {plugin.Name}");
+                return;
+            }
+
+            try
+            {
+                plugin.Initialize(serverPort, config);
+                loadedPlugins.Add(plugin);
+                pluginConfigs[plugin.Name] = config;
+
+                Log.Debug($"[FMOD] 已加载插件: {plugin.Name} v{plugin.Version} by {plugin.Author}");
+            }
+            catch (Exception ex)
+            {
+                Log.Debug($"[FMOD] 初始化插件失败: {plugin.Name}, 错误: {ex.Message}");
+            }
+        }
+
+        public static object LoadPluginConfigForAttribute(object plugin, PropertyInfo configProperty, PluginConfig configAttribute, int serverPort)
+        {
+            try
+            {
+                // 获取配置类型
+                Type configType = configProperty.PropertyType;
+
+                // 确定配置路径
+                string pluginName = plugin.GetType().Name;
+                string configPath = GetPluginConfigPathForAttribute(serverPort, pluginName, configAttribute);
+
+                // 确保目录存在
+                Directory.CreateDirectory(Path.GetDirectoryName(configPath));
+
+                if (File.Exists(configPath))
+                {
+                    // 从文件加载现有配置
+                    return LoadExistingConfigForAttribute(configPath, configType);
+                }
+                else
+                {
+                    // 创建默认配置
+                    object defaultConfig = CreateDefaultConfigForAttribute(configType, configAttribute);
+                    SavePluginConfigForAttribute(configPath, pluginName, defaultConfig);
+                    return defaultConfig;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FMOD] 加载插件配置失败: {ex.Message}");
+                return CreateDefaultConfigForAttribute(configProperty.PropertyType, configAttribute);
+            }
+        }
+
+        private static bool CheckPluginEnabledForAttribute(object plugin, PropertyInfo configProperty)
+        {
+            try
+            {
+                // 如果没有配置属性，默认启用插件
+                if (configProperty == null)
+                    return true;
+
+                // 获取配置对象
+                var config = configProperty.GetValue(plugin);
+                if (config == null)
+                    return true; // 没有配置也默认启用
+
+                // 检查配置对象中是否有 Enabled 或 IsEnabled 属性
+                var enabledProperty = config.GetType().GetProperty("Enabled") ?? config.GetType().GetProperty("IsEnabled");
+                if (enabledProperty != null && enabledProperty.PropertyType == typeof(bool))
+                {
+                    return (bool)enabledProperty.GetValue(config);
+                }
+
+                // 如果没有找到启用属性，默认启用
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FMOD] 检查插件启用状态失败: {ex.Message}");
+                return false;
+            }
+        }
+
+        private static void ExecutePluginMethod(object plugin, MethodInfo method, PluginEnabled attribute)
+        {
+            try
+            {
+                // 检查方法参数
+                var parameters = method.GetParameters();
+
+                if (parameters.Length == 0)
+                {
+                    // 无参数方法直接调用
+                    if (attribute.IsAsync && method.ReturnType == typeof(Task))
+                    {
+                        // 异步方法
+                        var task = (Task)method.Invoke(plugin, null);
+                        if (attribute.Timeout > 0)
+                        {
+                            if (!task.Wait(attribute.Timeout))
+                            {
+                                Console.WriteLine($"[FMOD] 插件方法执行超时: {method.Name}");
+                            }
+                        }
+                        else
+                        {
+                            task.Wait();
+                        }
+                    }
+                    else
+                    {
+                        // 同步方法
+                        method.Invoke(plugin, null);
+                    }
+
+                    Console.WriteLine($"[FMOD] 执行插件方法: {method.Name} (Order: {attribute.Order})");
+                }
+                else
+                {
+                    // 对于有参数的方法，可以根据 attribute 或其他逻辑传递参数
+                    // 这里简化处理，只记录警告
+                    Console.WriteLine($"[FMOD] 警告: 方法 {method.Name} 需要参数，跳过执行");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FMOD] 执行插件方法失败 {method.Name}: {ex.Message}");
+            }
+        }
+
+        // 辅助方法
+        private static string GetPluginConfigPathForAttribute(int serverPort, string pluginName, PluginConfig configAttribute)
+        {
+            string configDir = Path.Combine(Paths.ConfigDir, serverPort.ToString(), "Plugins", "Attributes");
+            string fileName = configAttribute?.ConfigKey ?? $"{pluginName}.yaml";
+            return Path.Combine(configDir, fileName);
+        }
+
+        private static object LoadExistingConfigForAttribute(string configPath, Type configType)
+        {
+            try
+            {
+                string yaml = File.ReadAllText(configPath);
+                var deserializer = new DeserializerBuilder()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .Build();
+
+                return deserializer.Deserialize(yaml, configType);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FMOD] 加载现有配置失败: {ex.Message}");
+                return Activator.CreateInstance(configType);
+            }
+        }
+
+        private static object CreateDefaultConfigForAttribute(Type configType, PluginConfig configAttribute)
+        {
+            try
+            {
+                object config = Activator.CreateInstance(configType);
+
+                // 如果提供了默认值，尝试设置
+                if (!string.IsNullOrEmpty(configAttribute?.DefaultValue))
+                {
+                    // 这里可以添加根据属性类型解析默认值的逻辑
+                    Console.WriteLine($"[FMOD] 使用默认配置值: {configAttribute.DefaultValue}");
+                }
+
+                return config;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FMOD] 创建默认配置失败: {ex.Message}");
+                return null;
+            }
+        }
+
+        private static void SavePluginConfigForAttribute(string configPath, string pluginName, object config)
+        {
+            try
+            {
+                var serializer = new SerializerBuilder()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .Build();
+
+                string yaml = serializer.Serialize(config);
+                File.WriteAllText(configPath, yaml);
+                Console.WriteLine($"[FMOD] 已保存插件配置: {Path.GetFileName(configPath)}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[FMOD] 保存插件配置失败: {ex.Message}");
+            }
+        }
         private static bool CheckPluginEnabled(object config, Plugin plugin)
         {
             try
@@ -221,9 +454,10 @@ namespace FMOD.API
             }
             catch (Exception ex)
             {
-                return true; 
+                return true;
             }
         }
+
         /// <summary>
         /// 加载插件配置
         /// </summary>
@@ -336,7 +570,6 @@ namespace FMOD.API
             }
         }
 
-
         /// <summary>
         /// 获取插件配置文件路径
         /// </summary>
@@ -394,6 +627,7 @@ namespace FMOD.API
                 Console.WriteLine($"[FMOD] 保存插件配置失败: {ex.Message}");
             }
         }
+
         /// <summary>
         /// 加载现有配置
         /// </summary>
@@ -542,6 +776,7 @@ namespace FMOD.API
                 }
             }
         }
+
         /// <summary>
         /// 禁用所有已加载的插件
         /// </summary>
@@ -586,9 +821,11 @@ namespace FMOD.API
                 }
                 catch (Exception ex)
                 {
+                    Log.Debug($"[FMOD] 重新加载插件配置失败: {plugin.Name}, 错误: {ex.Message}");
                 }
             }
         }
+
         /// <summary>
         /// 插件配置包装器（用于YAML序列化）
         /// </summary>
@@ -609,6 +846,9 @@ namespace FMOD.API
             public bool IsEnabled { get; set; } = true;
         }
 
+        /// <summary>
+        /// 启用插件配置包装器
+        /// </summary>
         public class EnabledPluginConfigWrapper
         {
             public bool IsEnabled { get; set; } = true;

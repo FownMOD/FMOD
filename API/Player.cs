@@ -1,8 +1,14 @@
-﻿using CentralAuth;
+﻿using AFK;
+using AnimatorLayerManagement;
+using Audio;
+using CameraShaking;
+using CentralAuth;
 using CommandSystem;
 using CommandSystem.Commands.RemoteAdmin.Dms;
 using CustomPlayerEffects;
 using Discord;
+using FMOD.API.CustHint;
+using FMOD.API.Interface;
 using FMOD.API.Roles;
 using FMOD.API.ServerSpecific;
 using FMOD.API.SSAudio;
@@ -12,6 +18,7 @@ using Footprinting;
 using Hints;
 using InventorySystem;
 using InventorySystem.Disarming;
+using InventorySystem.GUI;
 using InventorySystem.Items;
 using InventorySystem.Items.Usables;
 using InventorySystem.Items.Usables.Scp330;
@@ -35,7 +42,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using VoiceChat;
+using static RoundPlayerHistory;
 using static RoundSummary;
+using IVoiceRole = PlayerRoles.Voice.IVoiceRole;
 
 namespace FMOD.API
 {
@@ -96,7 +105,7 @@ namespace FMOD.API
         {
             get
             {
-                return this.Transform.position;
+                return FpcModule.Position;
             }
             set
             {
@@ -189,6 +198,10 @@ namespace FMOD.API
             {
                 return this.ReferenceHub.nicknameSync.MyNick;
             }
+            set
+            {
+                this.ReferenceHub.nicknameSync.MyNick = value;
+            }
         }
         public Team Team => ReferenceHub.roleManager.CurrentRole.Team;
         public Vector3 Scale => GameObject.transform.localScale;
@@ -217,8 +230,10 @@ namespace FMOD.API
             }
             set
             {
-                Interface.IVoiceRole voiceRole = this.Role.Base as Interface.IVoiceRole;
-                voiceRole.VoiceChatChannel = value;
+                if (VoiceModule is Interface.IVoiceRole voiceRole)
+                {
+                    voiceRole.VoiceChatChannel = value;
+                }
             }
         }
         public uint NetworkId => ReferenceHub.characterClassManager.netId;
@@ -242,7 +257,7 @@ namespace FMOD.API
 
         public void Kick(string MSG)
         {
-            LabApi.Features.Wrappers.Server.KickPlayer(LabApi.Features.Wrappers.Player.Get(UserId), MSG);
+            BanPlayer.KickUser(ReferenceHub, MSG);
         }
         public void Kick()
         {
@@ -250,18 +265,41 @@ namespace FMOD.API
         }
         public void Ban(string msg, long time)
         {
-            LabApi.Features.Wrappers.Server.BanPlayer(LabApi.Features.Wrappers.Player.Get(UserId), msg, time);
+            BanPlayer.BanUser(ReferenceHub, msg, time);
         }
         public bool RemoteAdminAccess => ReferenceHub.serverRoles.RemoteAdmin;
         public PlayerPermissions RemoteAdminPermissions => (PlayerPermissions)this.ReferenceHub.serverRoles.Permissions;
-        public PlayerCommandSender Sender => GetSender();
-        public PlayerCommandSender GetSender()
+        public PlayerCommandSender Sender
         {
-            ReferenceHub.queryProcessor.TryGetSender(out var sender);
-            return sender;
+            get
+            {
+                ReferenceHub.queryProcessor.TryGetSender(out var sender);
+                return sender;
+            }
         }
-        public float Stamina => ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue;
-        public float MaxStamina => ReferenceHub.playerStats.GetModule<StaminaStat>().MaxValue;
+        public float Stamina
+        {
+            get
+            {
+                return ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue;
+
+            }
+            set
+            {
+                ReferenceHub.playerStats.GetModule<StaminaStat>().CurValue = value;
+            }
+        }
+        public float MaxStamina
+        {
+            get
+            {
+                return ReferenceHub.playerStats.GetModule<StaminaStat>().MaxValue;
+            }
+            set
+            {
+                ReferenceHub.playerStats.GetModule<StaminaStat>().MaxValue = value;
+            }
+        }
         public IEnumerable<StatusEffectBase> ActiveEffects
         {
             get
@@ -638,6 +676,135 @@ namespace FMOD.API
             {
                 item.UnSpawn();
             }
+        }
+        public PlayerHistoryLog PlayerHistory
+        {
+            get
+            {
+                PlayerHistoryLog pllog = new PlayerHistoryLog();
+                foreach (PlayerHistoryLog log in RoundPlayerHistory.singleton.historyLogs)
+                {
+                    if (log.PlayerId == Id)
+                    {
+                        pllog = log;
+                    }
+                }
+                return pllog;
+            }
+        }
+        public DamagedAudio DamagedAudio
+        {
+            get
+            {
+                return ReferenceHub.GetComponent<Audio.DamagedAudio>();
+            }
+        }
+        public AnimatorLayerManager AnimatorLayerManager
+        {
+            get
+            {
+                return ReferenceHub.GetComponent<AnimatorLayerManager>();
+            }
+        }
+        public void AFKKick()
+        {
+            AFKManager.AddPlayer(ReferenceHub);
+        }
+        public AmmoElement AmmoElement
+        {
+            get
+            {
+                return ReferenceHub.GetComponent<AmmoElement>();
+            }
+        }
+        public EmotionPresetType EmotionPresetType
+        {
+            get
+            {
+                return EmotionSync.GetEmotionPreset(ReferenceHub);
+            }
+            set
+            {
+                EmotionSync.ServerSetEmotionPreset(ReferenceHub, value);
+            }
+        }
+        public float WalkSpeed
+        {
+            get
+            {
+                return FpcModule.WalkSpeed;
+            }
+            set
+            {
+                FpcModule.WalkSpeed = value;
+            }
+        }
+        public float JumpSpeed
+        {
+            get
+            {
+                return FpcModule.JumpSpeed;
+            }
+            set
+            {
+                FpcModule.JumpSpeed = value;
+            }
+
+        }
+        public float SprintSpeed
+        {
+            get
+            {
+                return FpcModule.SprintSpeed;
+            }
+            set
+            {
+                FpcModule.SprintSpeed = value;
+            }
+        }
+        public Vector2 LookRotation
+        {
+            get
+            {
+                return new Vector2(FpcMouseLook.CurrentVertical, FpcMouseLook.CurrentHorizontal);
+            }
+            set => ReferenceHub.TryOverrideRotation(value);
+        }
+        public FpcMouseLook FpcMouseLook
+        {
+            get
+            {
+                return FpcModule.MouseLook;
+            }
+        }
+        public FirstPersonMovementModule FpcModule
+        {
+            get
+            {
+                IFpcRole fpcRole = ReferenceHub.roleManager.CurrentRole as IFpcRole;
+                return fpcRole.FpcModule;
+            }
+        }
+        public Vector3 Gravity
+        {
+            get
+            {
+                return FpcModule.Motor.GravityController.Gravity;
+            }
+
+            set
+            {
+                FpcModule.Motor.GravityController.Gravity = value;
+            }
+        }
+        public Faction Faction => Team.GetFaction();
+        public void AddCustHint(ABHint hint)
+        {
+            hint.SendToPlayer(ReferenceHub);
+        }
+        public void RemoveCustHint(ABHint hint)
+        {
+            hint.RemoveFromPlayer(Connection);
         }
     }
 }

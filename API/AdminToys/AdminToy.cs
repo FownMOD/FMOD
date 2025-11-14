@@ -1,30 +1,46 @@
 ﻿using AdminToys;
 using FMOD.Enums;
+using Mirror;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace FMOD.API.AdminToys
 {
     public abstract class AdminToy
     {
-        public abstract AdminToyType AdminToyType { get;}
-        public AdminToy(AdminToyBase adminToyBase) 
+        public abstract AdminToyType AdminToyType { get; }
+
+        public static Dictionary<AdminToyBase, AdminToy> Dictionary = new Dictionary<AdminToyBase, AdminToy>();
+
+        public AdminToyBase Base { get; set; }
+
+        public AdminToy(AdminToyBase adminToyBase)
         {
             this.Base = adminToyBase;
+            if (!Dictionary.ContainsKey(adminToyBase))
+            {
+                Dictionary.Add(adminToyBase, this);
+            }
         }
-        public static Dictionary<AdminToy, AdminToyBase> Dictionary = new Dictionary<AdminToy, AdminToyBase>();
-        public AdminToyBase Base { get; set; }
+
         public static AdminToy Get(AdminToyBase adminToyBase)
         {
-            return Dictionary.Keys.FirstOrDefault(x=>x.Base == adminToyBase);
+            if (Dictionary.ContainsKey(adminToyBase))
+                return Dictionary[adminToyBase];
+            return null;
         }
+
+        public static bool TryGet(AdminToyBase adminToyBase, out AdminToy adminToy)
+        {
+            adminToy = Get(adminToyBase);
+            return adminToy != null;
+        }
+
         public static AdminToy Create(AdminToyType adminToyType, Vector3 pos)
         {
-            switch(adminToyType)
+            switch (adminToyType)
             {
                 case AdminToyType.Camera:
                     return CameraToy.Create(pos);
@@ -33,7 +49,7 @@ namespace FMOD.API.AdminToys
                 case AdminToyType.Interactable:
                     return InteractableToy.Create(pos);
                 case AdminToyType.Light:
-                   return LightToy.Create(pos, 100);
+                    return LightToy.Create(pos, 10f);
                 case AdminToyType.Primitive:
                     return Primitive.Create(pos);
                 case AdminToyType.ShootingTarget:
@@ -45,40 +61,44 @@ namespace FMOD.API.AdminToys
                 case AdminToyType.Waypoint:
                     return Waypoint.Create(pos);
                 default:
-                    throw new NotImplementedException();
+                    throw new NotImplementedException($"AdminToyType {adminToyType} not implemented");
             }
         }
-        public static bool TryGet(AdminToyBase adminToyBase, out AdminToy adminToy)
+        protected static GameObject FindPrefab<T>() where T : AdminToyBase
         {
-            AdminToy toy = Get(adminToyBase);
-            if (toy == null)
+            foreach (var prefab in NetworkManager.singleton.spawnPrefabs)
             {
-                adminToy = null;
-                return false;
+                if (prefab.GetComponent<T>() != null)
+                    return prefab;
             }
-            adminToy = toy;
-            return true;
+            return null;
         }
+
         public Vector3 Scale
         {
-            get { return this.Base.Scale; }
-            set { Base.Scale = value; }
+            get => Base.Scale;
+            set => Base.Scale = value;
         }
+
         public Vector3 Position
         {
-            get
-            {
-                return Base.Position;
-            }
-            set
-            {
-                Base.Position = value;
-            }
+            get => Base.NetworkPosition;
+            set => Base.NetworkPosition = value;
         }
+
         public Quaternion Rotation
         {
-            get { return Base.Rotation; }
-            set { Base.Rotation = value; }
+            get => Base.NetworkRotation;
+            set => Base.NetworkRotation = value;
+        }
+
+        public void Destroy()
+        {
+            if (Base != null && Base.gameObject != null)
+            {
+                NetworkServer.Destroy(Base.gameObject);
+                Dictionary.Remove(Base);
+            }
         }
     }
 }

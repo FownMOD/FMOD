@@ -1,11 +1,6 @@
 ﻿using AdminToys;
 using FMOD.Enums;
 using Mirror;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace FMOD.API.AdminToys
@@ -16,48 +11,36 @@ namespace FMOD.API.AdminToys
         {
             this.Base = adminToyBase;
         }
-        public static Text Create(Vector3 pos,string Content ="")
-        {
-            TextToy textToy = new TextToy();
-            NetworkServer.Spawn(textToy.gameObject);
-            Text text = (Text)AdminToy.Get(textToy);
-            text.TextContent = Content;
-            text.Position = pos;
-            return text;
-        }
-        public static Text Get(AdminToy adminToy)
-        {
-            Text text = adminToy as Text;
-            return text;
-        }
-        public static Text Get(TextToy text)
-        {
-            AdminToy.TryGet(text, out var adminToy);
-            return Get(adminToy);
-        }
+
         public new TextToy Base { get; set; }
+
+        public static Text Create(Vector3 pos, string content = "")
+        {
+            var prefab = FindPrefab<TextToy>();
+            if (prefab == null) return null;
+
+            var textObject = Object.Instantiate(prefab);
+            TextToy textToy = textObject.GetComponent<TextToy>();
+
+            NetworkServer.Spawn(textObject);
+            textToy.NetworkPosition = pos;
+            textToy.Network_textFormat = content;
+
+            return new Text(textToy);
+        }
+
         public string TextContent
         {
-            get
-            {
-                return this.Base.Network_textFormat;
-            }
-            set
-            {
-                this.Base.Network_textFormat = value;
-            }
+            get => Base.Network_textFormat;
+            set => Base.Network_textFormat = value;
         }
+
         public Vector2 Size
         {
-            get
-            {
-                return this.Base.Network_displaySize;
-            }
-            set
-            {
-                this.Base.Network_displaySize = value;
-            }
+            get => Base.Network_displaySize;
+            set => Base.Network_displaySize = value;
         }
+
         public override AdminToyType AdminToyType => AdminToyType.Text;
     }
 }

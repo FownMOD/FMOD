@@ -38,11 +38,15 @@ namespace FMOD.API.AdminToys
         }
         public static AdminToy Create(Vector3 Position)
         {
-            Scp079CameraToy scp079CameraToy = new Scp079CameraToy();
-            NetworkServer.Spawn(scp079CameraToy.gameObject);
-            scp079CameraToy.NetworkPosition = Position;
-            AdminToy toy = AdminToy.Get(scp079CameraToy);
-            return toy;
+            var prefab = FindPrefab<Scp079CameraToy>();
+            if (prefab == null) return null;
+
+            var primitiveObject = UnityEngine.Object.Instantiate(prefab);
+            Scp079CameraToy cameraToy = primitiveObject.GetComponent<Scp079CameraToy>();
+
+            NetworkServer.Spawn(primitiveObject);
+            cameraToy.NetworkPosition = Position;
+            return Get(cameraToy);
         }
         public new Scp079CameraToy Base { get; set; }
         public Room CurrentRoom

@@ -644,31 +644,6 @@ namespace FMOD.API
         {
             Broadcast.Singleton.TargetAddElement(this.Connection, msg, time, Broadcast.BroadcastFlags.Normal);
         }
-        public NetworkAudioPlayer AddAudio(string filePath,
-            Enums.AudioType audioType, bool loop = false, float volume = 1.0f, bool is3DAudio = true)
-        {
-            return AudioManager.PlayAudioForPlayer(ReferenceHub, filePath, audioType, loop, volume, is3DAudio);
-        }
-        public void StopAllAudio()
-        {
-            AudioManager.StopAudioForPlayer(ReferenceHub);
-        }
-
-        /// <summary>
-        /// 暂停玩家的所有音频
-        /// </summary>
-        public void PauseAllAudio()
-        {
-            AudioManager.PauseAudioForPlayer(ReferenceHub);
-        }
-
-        /// <summary>
-        /// 恢复玩家的所有音频
-        /// </summary>
-        public void ResumeAllAudio()
-        {
-            AudioManager.ResumeAudioForPlayer(ReferenceHub);
-        }
         public void ClearInventory()
         {
 

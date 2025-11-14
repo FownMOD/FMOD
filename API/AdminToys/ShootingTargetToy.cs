@@ -21,10 +21,16 @@ namespace FMOD.API.AdminToys
         }
         public static ShootingTargetToy Create(Vector3 pos)
         {
-            ShootingTarget target = new ShootingTarget();
-            NetworkServer.Spawn(target.gameObject);
-            target.NetworkPosition = pos;
-            return (ShootingTargetToy)AdminToy.Get(target);
+            var prefab = FindPrefab<ShootingTarget>();
+            if (prefab == null) return null;
+
+            var primitiveObject = UnityEngine.Object.Instantiate(prefab);
+            ShootingTarget shooting = primitiveObject.GetComponent<ShootingTarget>();
+
+            NetworkServer.Spawn(primitiveObject);
+            shooting.NetworkPosition = pos;
+
+            return new ShootingTargetToy(shooting);
         }
         public static ShootingTargetToy Get(AdminToy adminToy)
         {

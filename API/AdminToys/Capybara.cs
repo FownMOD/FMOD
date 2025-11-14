@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace FMOD.API.AdminToys
 {
@@ -18,10 +19,15 @@ namespace FMOD.API.AdminToys
         }
         public static Capybara Create(Vector3 Position)
         {
-            CapybaraToy capybaraToy = new CapybaraToy();
-            NetworkServer.Spawn(capybaraToy.gameObject);
-            capybaraToy.NetworkPosition = Position;
-            return (Capybara)AdminToy.Get(capybaraToy);
+            var prefab = FindPrefab<CapybaraToy>();
+            if (prefab == null) return null;
+
+            var primitiveObject = Object.Instantiate(prefab);
+            CapybaraToy capybara = primitiveObject.GetComponent<CapybaraToy>();
+
+            NetworkServer.Spawn(primitiveObject);
+            capybara.NetworkPosition = Position;
+            return Get(capybara);
         }
         public static Capybara Get(AdminToy toy)
         {

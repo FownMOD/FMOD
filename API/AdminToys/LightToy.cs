@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace FMOD.API.AdminToys
 {
@@ -19,11 +20,16 @@ namespace FMOD.API.AdminToys
         public new LightSourceToy Base { get; set; }
         public static LightToy Create(Vector3 pos, float Range)
         {
-            LightSourceToy lightSourceToy = new LightSourceToy();
-            NetworkServer.Spawn(lightSourceToy.gameObject);
-            lightSourceToy.NetworkPosition = pos;
-            lightSourceToy.NetworkLightRange = Range;
-            return (LightToy)AdminToy.Get(lightSourceToy);
+            var prefab = FindPrefab<LightSourceToy>();
+            if (prefab == null) return null;
+
+            var primitiveObject = Object.Instantiate(prefab);
+            LightSourceToy light = primitiveObject.GetComponent<LightSourceToy>();
+
+            NetworkServer.Spawn(primitiveObject);
+            light.NetworkPosition = pos;
+            light.NetworkLightRange = Range;
+            return Get(light);
         }
         public static LightToy Get(AdminToy adminToy)
         {

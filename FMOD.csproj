@@ -194,11 +194,7 @@
     <Compile Include="API\Round.cs" />
     <Compile Include="API\Server.cs" />
     <Compile Include="API\ServerSpecific\SimpleKeyBind.cs" />
-    <Compile Include="API\SSAudio\AudioFormat.cs" />
-    <Compile Include="API\SSAudio\AudioManager.cs" />
-    <Compile Include="API\SSAudio\AudioPlayer.cs" />
-    <Compile Include="API\SSAudio\CustomMp3FileReader.cs" />
-    <Compile Include="API\SSAudio\NetworkAudioPlayer.cs" />
+    <Compile Include="API\SSAudio\AudioPlayerBase.cs" />
     <Compile Include="Commands\GAMECommand\FMODCommand.cs" />
     <Compile Include="Enums\AdminToyType.cs" />
     <Compile Include="Enums\AudioType.cs" />
@@ -231,6 +227,7 @@
     <Compile Include="Events\Interfaces\IFMODPlayerEvent.cs" />
     <Compile Include="Events\Interfaces\IPlayerEvent.cs" />
     <Compile Include="Events\Patchs\PlayerPatchs.cs" />
+    <Compile Include="Extensions\AudioMessageExtensions.cs" />
     <Compile Include="Extensions\ItemTypeExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />

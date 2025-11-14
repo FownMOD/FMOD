@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace FMOD.API.AdminToys
 {
@@ -19,11 +20,15 @@ namespace FMOD.API.AdminToys
         public new InvisibleInteractableToy Base { get; set; }
         public static InteractableToy Create(Vector3 Pos)
         {
-            InvisibleInteractableToy invisibleInteractableToy = new InvisibleInteractableToy();
-            NetworkServer.Spawn(invisibleInteractableToy.gameObject);
-            invisibleInteractableToy.Position = Pos;
-            invisibleInteractableToy.NetworkPosition = Pos;
-            return (InteractableToy)AdminToy.Get(invisibleInteractableToy);
+            var prefab = FindPrefab<InvisibleInteractableToy>();
+            if (prefab == null) return null;
+
+            var primitiveObject = Object.Instantiate(prefab);
+            InvisibleInteractableToy invisible = primitiveObject.GetComponent<InvisibleInteractableToy>();
+
+            NetworkServer.Spawn(primitiveObject);
+            invisible.NetworkPosition = Pos;
+            return Get(invisible);
         }
         public static InteractableToy Get(AdminToy adminToy)
         {

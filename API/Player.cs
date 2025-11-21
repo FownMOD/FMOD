@@ -50,10 +50,12 @@ namespace FMOD.API
 {
     public class Player
     {
-        public static List<ReferenceHub> ReferenceHubs = new List<ReferenceHub>();
+        public static List<ReferenceHub> ReferenceHubs = ReferenceHub.AllHubs.ToList();
         public static List<Player> List = new List<Player>();
+        public static Dictionary<GameObject, Player> Dictionary { get; } = new Dictionary<GameObject, Player>();
         public static List<Player> RemoteAdmins => Player.List.Where(x => x.RemoteAdminAccess).ToList();
         public static int DummyCount => ReferenceHub.GetPlayerCount(ClientInstanceMode.Dummy);
+        public static Dictionary<string, Player> UserIdsCache { get; } = new Dictionary<string, Player>(20);
         public Player(ReferenceHub referenceHub)
         {
             ReferenceHub = referenceHub;
@@ -64,20 +66,104 @@ namespace FMOD.API
         }
         public static Player Get(int Id)
         {
-            return List.FirstOrDefault(x => x.Id == Id);
+            return Get(ReferenceHubs.First(x => x.PlayerId == Id));
         }
-        public static Player Get(string UserID)
+        public static Player Get(string args)
         {
-            return List.FirstOrDefault(x => x.UserId == UserID);
+            Player result;
+            try
+            {
+                Player player;
+                int id;
+                if (string.IsNullOrWhiteSpace(args))
+                {
+                    result = null;
+                }
+                else if (Player.UserIdsCache.TryGetValue(args, out player) && player.IsConnected)
+                {
+                    result = player;
+                }
+                else if (int.TryParse(args, out id))
+                {
+                    result = Player.Get(id);
+                }
+                else
+                {
+                    if (args.EndsWith("@steam") || args.EndsWith("@discord") || args.EndsWith("@northwood") || args.EndsWith("@offline"))
+                    {
+                        using (Dictionary<GameObject, Player>.ValueCollection.Enumerator enumerator = Player.Dictionary.Values.GetEnumerator())
+                        {
+                            while (enumerator.MoveNext())
+                            {
+                                Player player2 = enumerator.Current;
+                                if (player2.UserId == args)
+                                {
+                                    player = player2;
+                                    break;
+                                }
+                            }
+                            goto IL_150;
+                        }
+                    }
+                    int num = 31;
+                    string text = args.ToLower();
+                    foreach (Player player3 in Player.Dictionary.Values)
+                    {
+                        if (player3.IsConnected && player3.Nickname != null && player3.Nickname.ToLower().Contains(args.ToLower()))
+                        {
+                            int num2 = player3.Nickname.Length - text.Length;
+                            if (num2 < num)
+                            {
+                                num = num2;
+                                player = player3;
+                            }
+                        }
+                    }
+                IL_150:
+                    if (player != null)
+                    {
+                        Player.UserIdsCache[player.UserId] = player;
+                    }
+                    result = player;
+                }
+            }
+            catch (Exception arg)
+            {
+                Log.Error(string.Format("{0}.{1} error: {2}", typeof(Player).FullName, "Get", arg));
+                result = null;
+            }
+            return result;
         }
         public static Player Get(GameObject gameObject)
         {
-            return List.FirstOrDefault(x => x.GameObject == gameObject);
+            if (gameObject == null)
+            {
+                return null;
+            }
+            Player result;
+            if (Player.Dictionary.TryGetValue(gameObject, out result))
+            {
+                return result;
+            }
+            if (Player.UnverifiedPlayers.TryGetValue(gameObject, out result))
+            {
+                return result;
+            }
+            ReferenceHub referenceHub;
+            if (ReferenceHub.TryGetHub(gameObject, out referenceHub))
+            {
+                return new Player(referenceHub);
+            }
+            return null;
         }
         public static Player Get(ICommandSender commandSender)
         {
             CommandSender Sender = commandSender as CommandSender;
             return Get(Sender.SenderId);
+        }
+        public static Player Get(CommandSender commandSender)
+        {
+            return Get(commandSender.SenderId);
         }
         public static Player Get(Footprint footprint)
         {
@@ -86,7 +172,7 @@ namespace FMOD.API
 
         public static Player Get(ReferenceHub referenceHub)
         {
-            return List.FirstOrDefault(x => x.ReferenceHub == referenceHub);
+            return Get(referenceHub.gameObject);
         }
         public ReferenceHub ReferenceHub;
         public Footprint Footprint
@@ -94,7 +180,18 @@ namespace FMOD.API
             get => ReferenceHub.GetComponent<Footprint>();
         }
         public Transform Transform => ReferenceHub.transform;
-        public Role Role { get; }
+        public Role Role
+        {
+            get
+            {
+                Roles.Role role = new Role(this.ReferenceHub.roleManager.CurrentRole);
+                return role;
+            }
+        }
+        public void SetRole(RoleTypeId newrole, RoleSpawnFlags roleSpawnFlags = RoleSpawnFlags.None, RoleChangeReason roleChangeReason = RoleChangeReason.None)
+        {
+            this.ReferenceHub.roleManager.ServerSetRole(newrole, roleChangeReason, roleSpawnFlags);
+        }
         public int Id => ReferenceHub.PlayerId;
         public string UserId => ReferenceHub.authManager.UserId;
         public GameObject GameObject

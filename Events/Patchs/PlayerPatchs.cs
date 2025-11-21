@@ -17,6 +17,35 @@ namespace FMOD.Events.Patchs
 {
     public class PlayerPatchs
     {
-        
+        [HarmonyPatch(typeof(LabApi.Events.Handlers.PlayerEvents), nameof(LabApi.Events.Handlers.PlayerEvents.OnJoined))]
+        public static class LabJoinedPatch
+        {
+            [HarmonyPrefix]
+            static void Prefix(PlayerJoinedEventArgs ev)
+            {
+                Player player = new Player(ev.Player.ReferenceHub);
+                PlayerJoinArgs playerJoinArgs = new PlayerJoinArgs(player.ReferenceHub);
+                Handlers.Player.OnPlayerJoined(playerJoinArgs);
+                Player.List.Add(player);
+                Player.Dictionary.Add(ev.Player.GameObject, player);
+                Player.UnverifiedPlayers.Add(ev.Player.GameObject, player);
+                Player.UserIdsCache.Add(ev.Player.UserId, player);
+            }
+        }
+        [HarmonyPatch(typeof(LabApi.Events.Handlers.PlayerEvents),nameof(LabApi.Events.Handlers.PlayerEvents.OnLeft))]
+        public static class LabLeftPatch
+        {
+            [HarmonyPrefix]
+            static void Prefix(PlayerLeftEventArgs ev)
+            {
+                Player player = new Player(ev.Player.ReferenceHub);
+                PlayerLeftArgs playerLeftArgs = new PlayerLeftArgs(player.ReferenceHub);
+                Handlers.Player.OnPlayerLeft(playerLeftArgs);
+                Player.List.Remove(player);
+                Player.Dictionary.Remove(player.GameObject);
+                Player.UnverifiedPlayers.Remove(player.GameObject);
+                Player.UserIdsCache.Remove(player.UserId);
+            }
+        }
     }
 }

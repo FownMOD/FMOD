@@ -11,10 +11,8 @@ namespace FMOD.API.Roles
 {
     public class FpcRole : Role
     {
-        public FpcRole(Player owner, PlayerRoleBase roleBase) : base(owner, roleBase)
+        public FpcRole(PlayerRoleBase roleBase) : base(roleBase)
         {
-            Player player = Player.Get(this.Base.gameObject);
-            player = owner;
             this.Base = (FpcStandardRoleBase)roleBase;
         }
         public new FpcStandardRoleBase Base {  get; set; }

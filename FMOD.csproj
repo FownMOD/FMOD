@@ -190,6 +190,7 @@
     <Compile Include="API\Respawn.cs" />
     <Compile Include="API\Roles\FpcRole.cs" />
     <Compile Include="API\Roles\Role.cs" />
+    <Compile Include="API\Roles\Scp049Role.cs" />
     <Compile Include="API\Room.cs" />
     <Compile Include="API\Round.cs" />
     <Compile Include="API\Server.cs" />
@@ -214,7 +215,7 @@
     <Compile Include="Events\EventArgs\Player\PlayerDroppingArgs.cs" />
     <Compile Include="Events\EventArgs\Player\PlayerEscapeingArgs.cs" />
     <Compile Include="Events\EventArgs\Player\PlayerLeftArgs.cs" />
-    <Compile Include="Events\EventArgs\Player\PlayerPickingArgs.cs" />
+    <Compile Include="Events\EventArgs\Player\PlayerPickiItemArgs.cs" />
     <Compile Include="Events\EventArgs\Player\ShootingEventArgs.cs" />
     <Compile Include="Events\Handlers\Dummy.cs" />
     <Compile Include="Events\Handlers\Pickup.cs" />

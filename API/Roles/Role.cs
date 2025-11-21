@@ -1,4 +1,5 @@
 ﻿using PlayerRoles;
+using PlayerRoles.FirstPersonControl.Spawnpoints;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,41 +9,30 @@ using UnityEngine;
 
 namespace FMOD.API.Roles
 {
-    public class Role:PlayerRoleBase
+    public class Role
     {
-        public override RoleTypeId RoleTypeId => Base.RoleTypeId;
-        public new string RoleName => Base.RoleName;
-        public override  Color RoleColor => Base.RoleColor;
+        public RoleTypeId RoleTypeId => Base.RoleTypeId;
+        public string RoleName => Base.RoleName;
+        public Color RoleColor => Base.RoleColor;
         public PlayerRoleBase Base { get; }
-        public override Team Team => Base.Team;
-        public Player Owner { get; }
+        public Team Team => Base.Team;
         public RoleChangeReason SpawnReason => Base.ServerSpawnReason;
         public RoleSpawnFlags SpawnFlags => Base.ServerSpawnFlags;
-        public Role(Player owner, PlayerRoleBase roleBase)
+        public Role(PlayerRoleBase roleBase)
         {
-            Owner = owner ?? throw new ArgumentNullException(nameof(owner));
-            Base = roleBase ?? throw new ArgumentNullException(nameof(roleBase));
+            this.Base = roleBase ?? throw new ArgumentNullException(nameof(roleBase));
         }
-
-        public void SetRole(RoleTypeId newRole, RoleChangeReason reason)
-        {
-            if (Owner?.ReferenceHub?.roleManager == null)
-                return;
-
-            Owner.ReferenceHub.roleManager.ServerSetRole(newRole, reason);
-        }
-
-        public void SetRole(RoleTypeId newRole)
-        {
-            SetRole(newRole, RoleChangeReason.None);
-        }
-
         public bool TryGetRole<T>(out T role) where T : PlayerRoleBase
         {
             role = Base as T;
             return role != null;
         }
-
+        public Vector3 GetSpawnPosition()
+        {
+            RoleSpawnpointManager.TryGetSpawnpointForRole(RoleTypeId, out ISpawnpointHandler spawnpoint);
+            spawnpoint.TryGetSpawnpoint(out Vector3 position, out float h);
+            return position;
+        }
         public bool IsRole<T>() where T : PlayerRoleBase
         {
             return Base is T;

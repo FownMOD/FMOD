@@ -172,7 +172,6 @@
     <Compile Include="API\Door.cs" />
     <Compile Include="API\DummyBase.cs" />
     <Compile Include="API\Interface\IVoiceRole.cs" />
-    <Compile Include="API\Items\CustomItem.cs" />
     <Compile Include="API\Items\FirearmItem.cs" />
     <Compile Include="API\Items\Flashlight.cs" />
     <Compile Include="API\Items\Item.cs" />
@@ -182,6 +181,7 @@
     <Compile Include="API\Log.cs" />
     <Compile Include="API\Map.cs" />
     <Compile Include="API\Patchs\HintDisplayPatch.cs" />
+    <Compile Include="API\Patchs\PlayerVisibilityPatch.cs" />
     <Compile Include="API\Paths.cs" />
     <Compile Include="API\Permissions.cs" />
     <Compile Include="API\Pickup.cs" />

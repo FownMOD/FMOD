@@ -17,6 +17,6 @@ namespace FMOD.API.Roles
         }
         public new FpcStandardRoleBase Base {  get; set; }
         public VisibilityController VisibilityController => Base.VisibilityController;
-
+        public static List<Player> VisibilityList = new List<Player>();
     }
 }

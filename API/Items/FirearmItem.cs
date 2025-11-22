@@ -16,8 +16,16 @@ namespace FMOD.API.Items
             this.Base = firearm;
         }
         public static List<FirearmItem> Firearms = new List<FirearmItem>();
-        public HitscanHitregModuleBase HitscanHitregModule { get; }
-        public AnimatorReloaderModuleBase AnimatorReloaderModule { get; }
+        public HitscanHitregModuleBase HitscanHitregModule
+        {
+            get
+            {
+                Base.TryGetModule<HitscanHitregModuleBase>(out var module);
+                return module;
+            }
+        }
+        public AnimatedFirearmViewmodel FirearmViewmodel => Base.ClientViewmodelInstance;
+        
         public new GameObject GameObject => Base.gameObject;
         public new Vector3 Position => Base.gameObject.transform.position;
         public Quaternion Rotation => Base.gameObject.transform.rotation;
@@ -59,6 +67,8 @@ namespace FMOD.API.Items
                 return Base.GetTotalMaxAmmo();
             }
         }
+        public FirearmWorldmodel Worldmodel => Base.WorldModel;
+        public float TotalLength => Base.TotalLengthInches();
         public new InventorySystem.Items.Firearms.Firearm Base { get; }
     }
 }

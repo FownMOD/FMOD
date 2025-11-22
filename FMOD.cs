@@ -1,6 +1,8 @@
 ﻿using FMOD.API;
+using FMOD.API.Items;
 using FMOD.Other;
 using HarmonyLib;
+using InventorySystem.Items;
 using LabApi.Loader.Features.Plugins;
 using Mirror;
 using System;
@@ -47,6 +49,8 @@ namespace FMOD
             Paths.GenerateFoldersAndFiles(Server.Port);
             Load.LoadAllPlugins(Server.Port);
             Permissions.Initialize();
+            InventorySystem.Items.ItemBase.OnItemAdded += OnItemCreate;
+            InventorySystem.Items.ItemBase.OnItemRemoved += OnItemDestroy;
             Log.Debug($"欢迎使用FMOD");
             Log.Debug($"{LogMsg.FMOD}");
             Log.Debug($"一共加载了{Load.GetLoadedPlugins().Count}个插件");
@@ -54,8 +58,20 @@ namespace FMOD
         public override void Disable()
         {
             Load.DisableAllPlugins();
+            InventorySystem.Items.ItemBase.OnItemAdded -= OnItemCreate;
+            InventorySystem.Items.ItemBase.OnItemRemoved -= OnItemDestroy;
             Log.CustomInfo($"FMOD已被禁用", UnityEngine.Color.red);
             Log.Debug($"{LogMsg.FMOD}");
+        }
+        public void OnItemCreate(ItemBase itemBase)
+        {
+            Item item = Item.Get(itemBase);
+            Item.List.Add(item);
+        }
+        public void OnItemDestroy(ItemBase itemBase)
+        {
+            Item item = Item.Get(itemBase);
+            Item.List.Remove(item);
         }
     }
 }

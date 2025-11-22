@@ -25,11 +25,11 @@ namespace FMOD.API
         }
         public static DummyBase Get(ReferenceHub referenceHub)
         {
-            return Dummies.FirstOrDefault(x => x.ReferenceHub == referenceHub);
+            return referenceHub.GetComponent<DummyBase>();
         }
         public static DummyBase Get(Player player)
         {
-            return Dummies.FirstOrDefault(x => x.Player == player);
+            return player.GameObject.GetComponent<DummyBase>();
         }
         public static bool Is(ReferenceHub hub, DummyBase dummy)
         {

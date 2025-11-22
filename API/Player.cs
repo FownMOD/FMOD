@@ -654,6 +654,7 @@ namespace FMOD.API
                 return this.GameObject != null;
             }
         }
+        public bool Invisible { get; set; } = false;
         public bool IsWhitelisted
         {
             get
@@ -673,7 +674,10 @@ namespace FMOD.API
                 this.ReferenceHub.serverRoles.IsInOverwatch = value;
             }
         }
-
+        public T GetComponent<T>()
+        {
+            return GameObject.GetComponent<T>();
+        }
         public bool IsNoclipPermitted
         {
             get

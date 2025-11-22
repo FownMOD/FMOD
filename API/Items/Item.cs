@@ -1,6 +1,10 @@
 ﻿using FMOD.Extensions;
 using InventorySystem.Items;
 using InventorySystem.Items.Firearms;
+using InventorySystem.Items.Keycards;
+using InventorySystem.Items.Pickups;
+using InventorySystem.Items.ToggleableLights.Flashlight;
+using InventorySystem.Items.Usables;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -11,7 +15,7 @@ using UnityEngine;
 
 namespace FMOD.API.Items
 {
-    public class Item:ItemBase
+    public class Item
     {
         public static List<Item> List = new List<Item>();
         public static Item Get(ItemType type)
@@ -24,11 +28,15 @@ namespace FMOD.API.Items
         }
         public static Item Get(ItemBase itemBase)
         {
-            if (itemBase == null)
-            {
-                return null;
-            }
-            return itemBase as Item;
+            if (itemBase is Firearm)
+                return new FirearmItem((Firearm)itemBase);
+            if (itemBase is FlashlightItem)
+                return new Flashlight((FlashlightItem)itemBase);
+            if (itemBase is KeycardItem)
+                return new KeyCardItem((KeycardItem)itemBase);
+            if (itemBase is UsableItem)
+                return new UseItem((UsableItem)itemBase);
+            return null;
         }
         public void SetWeight(float value)
         {
@@ -46,10 +54,10 @@ namespace FMOD.API.Items
         public GameObject GameObject => Base.gameObject;
         public Vector3 Scale => GameObject.transform.localScale;
         public Player CurrentOwner => Player.Get(Base.Owner);
-        public Vector3 Position => GameObject.transform.localPosition;
+        public Vector3 Position => GameObject.transform.position;
+        public ItemPickupBase ItemPickupBase => Base.PickupDropModel;
 
-        public override float Weight => Base.Weight;
-
+        public  float Weight => Base.Weight;
         public float GetWeight()
         { return Base.Weight; }
         public void Spawn()

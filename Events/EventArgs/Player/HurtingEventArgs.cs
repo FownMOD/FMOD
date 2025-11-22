@@ -15,15 +15,11 @@ namespace FMOD.Events.EventArgs.Player
         public HurtingEventArgs(ReferenceHub target, DamageHandlerBase damageHandlerBase)
         {
             Player = API.Player.Get(target);
-
-            // 创建 DamageBase 包装器
             DamageHandler = new DamageBase
             {
                 Base = damageHandlerBase,
                 Target = Player
             };
-
-            // 尝试获取攻击者
             if (damageHandlerBase is AttackerDamageHandler attackerDamage)
             {
                 Attacker = API.Player.Get(attackerDamage.Attacker.Hub);

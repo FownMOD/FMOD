@@ -1,6 +1,8 @@
 ﻿using CommandSystem;
 using FMOD.API;
+using FMOD.Loader;
 using FMOD.Other;
+using LabApi.Loader.Features.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,12 +56,13 @@ namespace FMOD.Commands.GAMECommand
         {
             try
             {
-                var plugins = Load.GetLoadedPlugins();
-                int pluginCount = plugins.Count;
+                var plugins = Load.LoadsMOD;
+                var Labplugins = Load.LoadsLabPlugins;
+                int pluginCount = plugins.Count + Load.LoadsLabPlugins.Count;
 
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine($"------({pluginCount})个插件已加载------");
-                sb.AppendLine($"插件名字 - 插件简述 - 插件作者 - 插件版本");
+                sb.AppendLine($"插件名字 - 作者 - 版本");
                 sb.AppendLine($"---------------------------------------");
                 if (pluginCount == 0)
                 {
@@ -69,7 +72,11 @@ namespace FMOD.Commands.GAMECommand
                 {
                     foreach (var plugin in plugins)
                     {
-                        sb.AppendLine($"{plugin.Name} - {plugin.Description} - {plugin.Author} - v{plugin.Version}");
+                        sb.AppendLine($"{plugin.Name} - {plugin.Author} - v{plugin.Version}");
+                    }
+                    foreach(var o in Labplugins)
+                    {
+                        sb.AppendLine($"Lab插件.{o.Name} - {o.Author} - v{o.Version}");
                     }
                 }
 
@@ -105,17 +112,10 @@ namespace FMOD.Commands.GAMECommand
             {
 
                 int serverPort = Server.Port;
-
-                // 禁用所有插件
-                Load.DisableAllPlugins();
-
-                // 重新加载插件
-                Load.LoadAllPlugins(serverPort);
-
-                // 获取重新加载后的插件数量
-                var plugins = Load.GetLoadedPlugins();
-
-                return$"插件重新加载完成！已加载 {plugins.Count} 个插件";
+                Load.UnLoadAllPlugin();
+                Load.LoadAllMod();
+                var pluginCount = Load.LoadsMOD.Count+Load.LoadsLabPlugins.Count;
+                return$"插件重新加载完成！已加载 {pluginCount} 个插件";
             }
             catch (Exception ex)
             {

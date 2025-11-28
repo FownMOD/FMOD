@@ -22,7 +22,7 @@ namespace FMOD.Events.Handlers
         public static Event<EscapingPocketDimensionEventArgs> PlayerEscapingPocketDimension { get; set; } = new Event<EscapingPocketDimensionEventArgs>();
         public static Event<HurtingEventArgs> PlayerHurting { get; set; } = new Event<HurtingEventArgs>();
         public static Event<ChangingItemArgs> PlayerChangingItem { get; set; } = new Event<ChangingItemArgs>();
-        public static Event<ChangingRoleArgs> PlayerChangingRole { get; set; } = new Event<ChangingRoleArgs>();
+        public static Event<SpawnedRoleArgs> PlayerSpawnedRole { get; set; } = new Event<SpawnedRoleArgs>();
         public static Event<PlayerDiedEventsArgs> PlayerDied { get; set; } = new Event<PlayerDiedEventsArgs>();
         public static Event<ShootingEventArgs> PlayerShooting { get; set; }=new Event<ShootingEventArgs>();
         /// <summary>
@@ -102,13 +102,9 @@ namespace FMOD.Events.Handlers
         {
             PlayerChangingItem.Invoke(args);
         }
-
-        /// <summary>
-        /// 触发玩家切换角色事件
-        /// </summary>
-        public static void OnPlayerChangingRole(ChangingRoleArgs args)
+        public static void InvokeSpawnedRole(SpawnedRoleArgs args)
         {
-            PlayerChangingRole.Invoke(args);
+            PlayerSpawnedRole.Invoke(args);
         }
     }
 }

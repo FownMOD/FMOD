@@ -22,12 +22,6 @@ namespace FMOD.API
         {
             return System.IO.Path.Combine(BaseDir, "Plugins", serverPort.ToString());
         }
-
-        public static string GetConfigPath(int serverPort)
-        {
-            return System.IO.Path.Combine(ConfigDir, serverPort.ToString(), "Config.yaml");
-        }
-
         /// <summary>
         /// 生成所有必要的文件夹和配置文件
         /// </summary>

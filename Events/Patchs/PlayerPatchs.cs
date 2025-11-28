@@ -60,5 +60,15 @@ namespace FMOD.Events.Patchs
                 Handlers.Player.OnPlayerHurting(hurtingEventArgs);
             }
         }
+        [HarmonyPatch(typeof(PlayerRoleManager),nameof(PlayerRoleManager.InitializeNewRole))]
+        public class PlayerSpawnedRolePatch
+        {
+            [HarmonyPostfix]
+            static void Postfix(PlayerRoleManager __instance)
+            {
+                SpawnedRoleArgs spawnedRoleArgs = new SpawnedRoleArgs(__instance.Hub);
+                Handlers.Player.InvokeSpawnedRole(spawnedRoleArgs);
+            }
+        }
     }
 }

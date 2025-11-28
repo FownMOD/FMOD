@@ -177,7 +177,6 @@
     <Compile Include="API\Items\Item.cs" />
     <Compile Include="API\Items\KeyCardItem.cs" />
     <Compile Include="API\Items\UseItem.cs" />
-    <Compile Include="API\Load.cs" />
     <Compile Include="API\Log.cs" />
     <Compile Include="API\Map.cs" />
     <Compile Include="API\Patchs\HintDisplayPatch.cs" />
@@ -208,7 +207,6 @@
     <Compile Include="Events\EventArgs\Pickup\Create.cs" />
     <Compile Include="Events\EventArgs\Pickup\Desroy.cs" />
     <Compile Include="Events\EventArgs\Player\ChangingItemArgs.cs" />
-    <Compile Include="Events\EventArgs\Player\ChangingRoleArgs.cs" />
     <Compile Include="Events\EventArgs\Player\EscapingPocketDimensionEventArgs.cs" />
     <Compile Include="Events\EventArgs\Player\HurtingEventArgs.cs" />
     <Compile Include="Events\EventArgs\Player\PlayerDiedEventsArgs.cs" />
@@ -217,6 +215,7 @@
     <Compile Include="Events\EventArgs\Player\PlayerLeftArgs.cs" />
     <Compile Include="Events\EventArgs\Player\PlayerPickiItemArgs.cs" />
     <Compile Include="Events\EventArgs\Player\ShootingEventArgs.cs" />
+    <Compile Include="Events\EventArgs\Player\SpawnedRoleArgs.cs" />
     <Compile Include="Events\Handlers\Dummy.cs" />
     <Compile Include="Events\Handlers\Pickup.cs" />
     <Compile Include="Events\Handlers\Player.cs" />
@@ -233,11 +232,12 @@
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\RoleTypeEx.cs" />
-    <Compile Include="FMOD.cs" />
+    <Compile Include="FMOD\MOD.cs" />
+    <Compile Include="Loader\LabConfig.cs" />
+    <Compile Include="Loader\Load.cs" />
+    <Compile Include="Loader\MainLabPlugin.cs" />
     <Compile Include="Other\LogMsg.cs" />
     <Compile Include="Other\FMODVersion.cs" />
-    <Compile Include="Plugins\Interfaces\ITranslation.cs" />
-    <Compile Include="Plugins\Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

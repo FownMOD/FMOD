@@ -16,7 +16,7 @@ namespace FMOD.Events.Handlers
     {
         public static Event<PlayerJoinArgs> PlayerJoined { get; set; } = new Event<PlayerJoinArgs>();
         public static Event<PlayerDroppingArgs> PlayerDropping { get; set; } = new Event<PlayerDroppingArgs>();
-        public static Event<PlayerPickingArgs> PlayerPicking { get; set; } = new Event<PlayerPickingArgs>();
+        public static Event<PlayerPickiItemArgs> PlayerPicking { get; set; } = new Event<PlayerPickiItemArgs>();
         public static Event<PlayerLeftArgs> PlayerLeft { get; set; } = new Event<PlayerLeftArgs>();
         public static Event<PlayerEscapeingArgs> PlayerEscapeing { get; set; } = new Event<PlayerEscapeingArgs>();
         public static Event<EscapingPocketDimensionEventArgs> PlayerEscapingPocketDimension { get; set; } = new Event<EscapingPocketDimensionEventArgs>();
@@ -66,7 +66,7 @@ namespace FMOD.Events.Handlers
         /// <summary>
         /// 触发玩家拾取物品事件
         /// </summary>
-        public static void OnPlayerPicking(PlayerPickingArgs args)
+        public static void OnPlayerPicking(PlayerPickiItemArgs args)
         {
             PlayerPicking.Invoke(args);
         }

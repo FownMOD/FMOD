@@ -1,5 +1,6 @@
 ﻿using FMOD.Enums;
 using Footprinting;
+using Mirror;
 using PlayerRoles.PlayableScps.Scp1507;
 using PlayerRoles.PlayableScps.Scp3114;
 using PlayerRoles.PlayableScps.Scp939;
@@ -39,25 +40,26 @@ namespace FMOD.API.DamageHandles
         {
             throw new NotImplementedException();
         }
-        public DamageHandlerBase Base { get; set; }
-        public StandardDamageHandler StandardDamageHandler { get; set; }
-        public CustomReasonDamageHandler CustomReasonDamageHandler { get; set; }
-        public WarheadDamageHandler WarheadDamageHandler { get; set; }
-        public ExplosionDamageHandler ExplosionDamageHandler { get; set; }
-        public FirearmDamageHandler FirearmDamageHandler { get; set; }
-        public AttackerDamageHandler AttackerDamageHandler { get; set; }
-        public DisruptorDamageHandler DisruptorDamageHandler { get; set; }
-        public CustomReasonFirearmDamageHandler CustomReasonFirearmDamageHandler { get; set; }
-        public ScpDamageHandler ScpDamageHandler { get; set; }
-        public Scp096DamageHandler Scp096DamageHandler { get; set; }
-        public Scp049DamageHandler Scp049DamageHandler { get; set; }
-        public Scp3114DamageHandler Scp3114DamageHandler { get; set; }
-        public Scp018DamageHandler Scp018DamageHandler { get; set; }
-        public PlayerStats PlayerStats { get; set; }
-        public MicroHidDamageHandler MicroHidDamageHandler { get; set; }
-        public JailbirdDamageHandler JailbirdDamageHandler { get; set; }
-        public UniversalDamageHandler UniversalDamageHandler { get; set; }
-        public DeathTranslation Translations { get; set; }
+        public DamageHandlerBase Base { get; }
+        public RecontainmentDamageHandler RecontainmentDamageHandlerBase { get; }
+        public StandardDamageHandler StandardDamageHandlerBase { get; }
+        public CustomReasonDamageHandler CustomReasonDamageHandlerBase { get; }
+        public WarheadDamageHandler WarheadDamageHandlerBase { get; }
+        public ExplosionDamageHandler ExplosionDamageHandlerBase { get; }
+        public FirearmDamageHandler FirearmDamageHandlerBase { get; }
+        public AttackerDamageHandler AttackerDamageHandlerBase { get; }
+        public DisruptorDamageHandler DisruptorDamageHandlerBase { get; }
+        public CustomReasonFirearmDamageHandler CustomReasonFirearmDamageHandlerBase { get; }
+        public ScpDamageHandler ScpDamageHandlerBase { get; }
+        public Scp096DamageHandler Scp096DamageHandlerBase { get; }
+        public Scp049DamageHandler Scp049DamageHandlerBase { get; }
+        public Scp3114DamageHandler Scp3114DamageHandlerBase { get; }
+        public Scp018DamageHandler Scp018DamageHandlerBase { get; set; }
+        public PlayerStats PlayerStats {  get; }
+        public MicroHidDamageHandler MicroHidDamageHandlerBase { get; }
+        public JailbirdDamageHandler JailbirdDamageHandlerBase { get; }
+        public UniversalDamageHandler UniversalDamageHandlerBase { get; }
+        public DeathTranslation Translations {  get; }
 
         public T As<T>() where T : DamageHandlerBase
         {
@@ -79,8 +81,8 @@ namespace FMOD.API.DamageHandles
             return true;
         }
 
-        public Player Target { get; set; }
-        public Player Attacker { get; set; }
+        public Player Target { get; }
+        public Player Attacker { get;}
         public float AbsorbedAhpDamage
         {
             get
@@ -93,7 +95,14 @@ namespace FMOD.API.DamageHandles
                 return standardDamageHandler.AbsorbedAhpDamage;
             }
         }
-        public Footprint TargetFootprint { get; set; }
+        public Footprint TargetFootprint
+        {
+            get
+            {
+                return Target.Footprint;
+            }
+        }
+
         public virtual float Damage
         {
             get
@@ -143,6 +152,7 @@ namespace FMOD.API.DamageHandles
                 }
                 if (@base is RecontainmentDamageHandler)
                 {
+                    
                     return DamageType.Recontainment;
                 }
                 if (@base is MicroHidDamageHandler)

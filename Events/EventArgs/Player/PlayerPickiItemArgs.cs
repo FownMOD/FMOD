@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace FMOD.Events.EventArgs.Player
 {
-    public class PlayerPickingArgs : System.EventArgs, IFMODPlayerEvent
+    public class PlayerPickiItemArgs : System.EventArgs, IFMODPlayerEvent
     {
-        public PlayerPickingArgs(ReferenceHub player, API.Pickup pickup)
+        public PlayerPickiItemArgs(ReferenceHub player, API.Pickup Pickup)
         {
-            Pickup = pickup;
             Player = API.Player.Get(player);
+            this.Pickup = Pickup;
             IsAllowed = true;
         }
-        public API.Pickup Pickup { get; set; }
-        public API.Player Player {  get; set; }
+        public API.Pickup Pickup { get; }
+        public API.Player Player {  get;}
         public bool IsAllowed { get; set; }
     }
 }

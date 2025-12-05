@@ -1,10 +1,18 @@
 ﻿using FMOD.API;
+using FMOD.API.CustHint;
 using FMOD.API.DamageHandles;
 using FMOD.API.Items;
 using FMOD.Events.EventArgs.Player;
+using FMOD.Other;
 using HarmonyLib;
+using Hints;
+using InventorySystem;
+using InventorySystem.Items;
+using InventorySystem.Items.Pickups;
+using InventorySystem.Searching;
 using LabApi.Events.Arguments.PlayerEvents;
 using LabApi.Events.Handlers;
+using Mirror;
 using PlayerRoles;
 using PlayerStatsSystem;
 using System;
@@ -12,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace FMOD.Events.Patchs
 {
@@ -30,6 +39,14 @@ namespace FMOD.Events.Patchs
                 Player.Dictionary.Add(ev.Player.GameObject, player);
                 Player.UnverifiedPlayers.Add(ev.Player.GameObject, player);
                 Player.UserIdsCache.Add(ev.Player.UserId, player);
+                if (!player.GameObject.TryGetComponent<PlayerHintController>(out _))
+                {
+                    player.GameObject.AddComponent<PlayerHintController>();
+                }
+                if (!player.GameObject.TryGetComponent<HintDisplay>(out _))
+                {
+                    player.GameObject.AddComponent<HintDisplay>();
+                }
                 Log.Debug($"玩家[{player.Nickname}]({player.UserId})加入服务器");
             }
         }
@@ -53,7 +70,7 @@ namespace FMOD.Events.Patchs
         public class PlayerHrtingPatch
         {
             [HarmonyPrefix]
-            static void Perfix(DamageHandlerBase handler)
+            static void Prefix(DamageHandlerBase handler)
             {
                 AttackerDamageHandler attackerDamageHandler = handler as AttackerDamageHandler;
                 HurtingEventArgs hurtingEventArgs = new HurtingEventArgs(attackerDamageHandler.Attacker.Hub, handler);
@@ -68,6 +85,22 @@ namespace FMOD.Events.Patchs
             {
                 SpawnedRoleArgs spawnedRoleArgs = new SpawnedRoleArgs(__instance.Hub);
                 Handlers.Player.InvokeSpawnedRole(spawnedRoleArgs);
+            }
+        }
+        [HarmonyPatch(typeof(ItemSearchCompletor),nameof(ItemSearchCompletor.Complete))]
+        public class PlayerPickingItem
+        {
+            [HarmonyPrefix]
+            static bool Prefix()
+            {
+                ItemSearchCompletor itemSearchCompletor = (ItemSearchCompletor)Activator.CreateInstance(typeof(ItemSearchCompletor));
+                PlayerPickiItemArgs playerPickiItemArgs = new PlayerPickiItemArgs(itemSearchCompletor.Hub, API.Pickup.Get(itemSearchCompletor.TargetPickup));
+                if (playerPickiItemArgs.IsAllowed == false)
+                {
+                    return false;
+                }
+                Events.Handlers.Player.OnPlayerPicking(playerPickiItemArgs);
+                return true;
             }
         }
     }

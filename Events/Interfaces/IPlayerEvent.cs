@@ -9,6 +9,6 @@ namespace FMOD.Events.Interfaces
 {
     public interface IPlayerEvent
     {
-        Player Player { get; set; }
+        Player Player { get;  }
     }
 }

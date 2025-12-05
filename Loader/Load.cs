@@ -300,7 +300,7 @@ namespace FMOD.Loader
                 }
                 else
                 {
-                    if (mod.Config == null)
+                    if (mod.ConfigType == null)
                     {
                         Log.Error($"{mod.Name}未指定Config");
                         return false;

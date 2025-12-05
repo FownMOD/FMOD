@@ -166,8 +166,8 @@
     <Compile Include="API\Attributes\PluginDisabled.cs" />
     <Compile Include="API\Attributes\PluginEnabled.cs" />
     <Compile Include="API\Attributes\PluginInfo.cs" />
-    <Compile Include="API\CustHint\ABHint.cs" />
-    <Compile Include="API\CustHint\PositionHintParameter.cs" />
+    <Compile Include="API\CustHint\CustomHint.cs" />
+    <Compile Include="API\CustHint\PlayerHintController.cs" />
     <Compile Include="API\DamageHandles\DamageBase.cs" />
     <Compile Include="API\Door.cs" />
     <Compile Include="API\DummyBase.cs" />
@@ -190,6 +190,7 @@
     <Compile Include="API\Roles\FpcRole.cs" />
     <Compile Include="API\Roles\Role.cs" />
     <Compile Include="API\Roles\Scp049Role.cs" />
+    <Compile Include="API\Roles\Scp173Role.cs" />
     <Compile Include="API\Room.cs" />
     <Compile Include="API\Round.cs" />
     <Compile Include="API\Server.cs" />
@@ -238,6 +239,7 @@
     <Compile Include="Loader\MainLabPlugin.cs" />
     <Compile Include="Other\LogMsg.cs" />
     <Compile Include="Other\FMODVersion.cs" />
+    <Compile Include="Other\PropertyGetter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

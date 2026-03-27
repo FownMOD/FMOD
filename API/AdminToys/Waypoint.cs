@@ -19,15 +19,8 @@ namespace FMOD.API.AdminToys
         }
         public static Waypoint Create(Vector3 pos)
         {
-            var prefab = FindPrefab<WaypointToy>();
-            if (prefab == null) return null;
-
-            var primitiveObject = UnityEngine.Object.Instantiate(prefab);
-            WaypointToy waypoint = primitiveObject.GetComponent<WaypointToy>();
-
-            NetworkServer.Spawn(primitiveObject);
-            waypoint.NetworkPosition = pos;
-
+            var p = FPrefabsManger.Spawn(pos, PrefabType.WaypointToy);
+            var waypoint = p.gameObject.AddComponent<WaypointToy>();
             return Get(waypoint);
         }
         public static Waypoint Get(AdminToy adminToy)

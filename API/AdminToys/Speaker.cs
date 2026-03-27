@@ -1,9 +1,11 @@
 ﻿using AdminToys;
 using FMOD.Enums;
+using LabApi.Features.Audio;
 using Mirror;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using VoiceChat.Codec.Enums;
 using VoiceChat.Networking;
 
 namespace FMOD.API.AdminToys
@@ -11,8 +13,6 @@ namespace FMOD.API.AdminToys
     public class Speaker : AdminToy
     {
         public override AdminToyType AdminToyType => AdminToyType.Speaker;
-
-        public static new Dictionary<AdminToy, Speaker> List = new Dictionary<AdminToy, Speaker>();
 
         public new SpeakerToy Base { get; set; }
 
@@ -83,29 +83,9 @@ namespace FMOD.API.AdminToys
 
         public static Speaker Create(Vector3 pos)
         {
-            GameObject speakerObject = UnityEngine.Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.GetComponent<SpeakerToy>() != null));
-            SpeakerToy speakerToy = speakerObject.GetComponent<SpeakerToy>();
-
-            if (speakerToy == null)
-            {
-                UnityEngine.Object.Destroy(speakerObject);
-                return null;
-            }
-
-            NetworkServer.Spawn(speakerObject);
-            speakerToy.NetworkPosition = pos;
-
-            Speaker speaker = new Speaker(speakerToy);
-            List.Add(AdminToy.Get(speakerToy), speaker);
-
-            return speaker;
-        }
-
-        public static new Speaker Get(AdminToy adminToy)
-        {
-            if (List.ContainsKey(adminToy))
-                return List[adminToy];
-            return null;
+            var sp = FPrefabsManger.Spawn(pos, PrefabType.SpeakerToy);
+            var speaker = sp.gameObject.AddComponent<SpeakerToy>();
+            return new Speaker(speaker);
         }
 
         public void Play(AudioMessage message)
@@ -169,19 +149,5 @@ namespace FMOD.API.AdminToys
             Play(stopMessage);
         }
 
-        public void Destroy()
-        {
-            if (Base != null && Base.gameObject != null)
-            {
-                NetworkServer.Destroy(Base.gameObject);
-            }
-
-            if (List.ContainsValue(this))
-            {
-                var key = List.FirstOrDefault(x => x.Value == this).Key;
-                if (key != null)
-                    List.Remove(key);
-            }
-        }
     }
 }

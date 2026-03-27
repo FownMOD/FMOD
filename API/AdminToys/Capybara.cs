@@ -19,14 +19,8 @@ namespace FMOD.API.AdminToys
         }
         public static Capybara Create(Vector3 Position)
         {
-            var prefab = FindPrefab<CapybaraToy>();
-            if (prefab == null) return null;
-
-            var primitiveObject = Object.Instantiate(prefab);
-            CapybaraToy capybara = primitiveObject.GetComponent<CapybaraToy>();
-
-            NetworkServer.Spawn(primitiveObject);
-            capybara.NetworkPosition = Position;
+            var cb = FPrefabsManger.Spawn(Position, PrefabType.CapybaraToy);
+            var capybara = cb.gameObject.AddComponent<CapybaraToy>();
             return Get(capybara);
         }
         public static Capybara Get(AdminToy toy)

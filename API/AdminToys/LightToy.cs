@@ -20,14 +20,8 @@ namespace FMOD.API.AdminToys
         public new LightSourceToy Base { get; set; }
         public static LightToy Create(Vector3 pos, float Range)
         {
-            var prefab = FindPrefab<LightSourceToy>();
-            if (prefab == null) return null;
-
-            var primitiveObject = Object.Instantiate(prefab);
-            LightSourceToy light = primitiveObject.GetComponent<LightSourceToy>();
-
-            NetworkServer.Spawn(primitiveObject);
-            light.NetworkPosition = pos;
+            var ligtp = FPrefabsManger.Spawn(pos,PrefabType.LightSourceToy);
+            var light = ligtp.gameObject.AddComponent<LightSourceToy>();
             light.NetworkLightRange = Range;
             return Get(light);
         }

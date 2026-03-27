@@ -11,56 +11,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Core.Tokens;
+using static PlayerStatsSystem.DamageHandlerBase;
 
 namespace FMOD.API.DamageHandles
 {
-    public class DamageBase : DamageHandlerBase
+    public abstract class DamageBase
     {
-        public override string RagdollInspectText { get; }
-
-        public override string DeathScreenText { get; }
-
-        public override string ServerLogsText { get; }
-
-        public override string ServerMetricsText { get; }
-        public HitboxType HitboxType
+        public DamageBase(DamageHandlerBase damageHandler)
         {
-            get
-            {
-                return As<FirearmDamageHandler>().Hitbox;
-            }
-            set
-            {
-                As<FirearmDamageHandler>().Hitbox = value;
-            }
+            this.Base = damageHandler;
         }
-        public override CassieAnnouncement CassieDeathAnnouncement { get; }
-
-        public override HandlerOutput ApplyDamage(ReferenceHub ply)
+        public string DeathScreenText
         {
-            throw new NotImplementedException();
+            get => Base.DeathScreenText;
+        }
+        public CassieAnnouncement CassieDeathAnnouncement
+        {
+            get => Base.CassieDeathAnnouncement;
         }
         public DamageHandlerBase Base { get; }
-        public RecontainmentDamageHandler RecontainmentDamageHandlerBase { get; }
-        public StandardDamageHandler StandardDamageHandlerBase { get; }
-        public CustomReasonDamageHandler CustomReasonDamageHandlerBase { get; }
-        public WarheadDamageHandler WarheadDamageHandlerBase { get; }
-        public ExplosionDamageHandler ExplosionDamageHandlerBase { get; }
-        public FirearmDamageHandler FirearmDamageHandlerBase { get; }
-        public AttackerDamageHandler AttackerDamageHandlerBase { get; }
-        public DisruptorDamageHandler DisruptorDamageHandlerBase { get; }
-        public CustomReasonFirearmDamageHandler CustomReasonFirearmDamageHandlerBase { get; }
-        public ScpDamageHandler ScpDamageHandlerBase { get; }
-        public Scp096DamageHandler Scp096DamageHandlerBase { get; }
-        public Scp049DamageHandler Scp049DamageHandlerBase { get; }
-        public Scp3114DamageHandler Scp3114DamageHandlerBase { get; }
-        public Scp018DamageHandler Scp018DamageHandlerBase { get; set; }
-        public PlayerStats PlayerStats {  get; }
-        public MicroHidDamageHandler MicroHidDamageHandlerBase { get; }
-        public JailbirdDamageHandler JailbirdDamageHandlerBase { get; }
-        public UniversalDamageHandler UniversalDamageHandlerBase { get; }
-        public DeathTranslation Translations {  get; }
-
         public T As<T>() where T : DamageHandlerBase
         {
             return this.Base as T;
@@ -80,9 +49,6 @@ namespace FMOD.API.DamageHandles
             param = t;
             return true;
         }
-
-        public Player Target { get; }
-        public Player Attacker { get;}
         public float AbsorbedAhpDamage
         {
             get
@@ -93,13 +59,6 @@ namespace FMOD.API.DamageHandles
                     return 0f;
                 }
                 return standardDamageHandler.AbsorbedAhpDamage;
-            }
-        }
-        public Footprint TargetFootprint
-        {
-            get
-            {
-                return Target.Footprint;
             }
         }
 

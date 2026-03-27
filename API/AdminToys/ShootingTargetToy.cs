@@ -21,15 +21,8 @@ namespace FMOD.API.AdminToys
         }
         public static ShootingTargetToy Create(Vector3 pos)
         {
-            var prefab = FindPrefab<ShootingTarget>();
-            if (prefab == null) return null;
-
-            var primitiveObject = UnityEngine.Object.Instantiate(prefab);
-            ShootingTarget shooting = primitiveObject.GetComponent<ShootingTarget>();
-
-            NetworkServer.Spawn(primitiveObject);
-            shooting.NetworkPosition = pos;
-
+            var p = FPrefabsManger.Spawn(pos, PrefabType.DBoyTarget);
+            var shooting = p.gameObject.AddComponent<ShootingTarget>();
             return new ShootingTargetToy(shooting);
         }
         public static ShootingTargetToy Get(AdminToy adminToy)
@@ -46,10 +39,5 @@ namespace FMOD.API.AdminToys
         public uint NetworkId => Base.NetworkId;
         public IVerificationRule VerificationRule => Base.VerificationRule;
         public bool Network_syncMode => Base.Network_syncMode;
-        public void Damage(float d)
-        {
-            DamageBase damageBase = new DamageBase();
-            Base.Damage(d, damageBase,new Vector3(1,1,1));
-        }
     }
 }

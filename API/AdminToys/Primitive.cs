@@ -16,15 +16,8 @@ namespace FMOD.API.AdminToys
 
         public static Primitive Create(Vector3 pos)
         {
-            var prefab = FindPrefab<PrimitiveObjectToy>();
-            if (prefab == null) return null;
-
-            var primitiveObject = Object.Instantiate(prefab);
-            PrimitiveObjectToy primitiveToy = primitiveObject.GetComponent<PrimitiveObjectToy>();
-
-            NetworkServer.Spawn(primitiveObject);
-            primitiveToy.NetworkPosition = pos;
-
+            var p = FPrefabsManger.Spawn(pos, PrefabType.PrimitiveObjectToy);
+            var primitiveToy = p.gameObject.AddComponent<PrimitiveObjectToy>();
             return new Primitive(primitiveToy);
         }
 

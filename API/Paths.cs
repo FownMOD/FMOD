@@ -10,13 +10,37 @@ namespace FMOD.API
 {
     public class Paths
     {
+        /// <summary>
+        /// 配置根目录
+        /// </summary>
         public static readonly string AppData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        /// <summary>
+        /// FMOD主目录
+        /// </summary>
         public static readonly string BaseDir = System.IO.Path.Combine(AppData, "FMOD");
+        /// <summary>
+        /// Mod依赖
+        /// </summary>
         public static readonly string DependenceDir = System.IO.Path.Combine(BaseDir, "Dependence");
+        /// <summary>
+        /// Mod配置文件夹
+        /// </summary>
         public static readonly string ConfigDir = System.IO.Path.Combine(BaseDir, "Config");
+        /// <summary>
+        /// 权限
+        /// </summary>
         public static readonly string PermissionsPath = System.IO.Path.Combine(ConfigDir, "Permissions.yaml");
+        /// <summary>
+        /// 翻译
+        /// </summary>
         public static readonly string Translation = System.IO.Path.Combine(ConfigDir, "Translation");
+        /// <summary>
+        /// 自定义物品
+        /// </summary>
         public static readonly string CustomItem = System.IO.Path.Combine(ConfigDir,"CustomItem");
+        /// <summary>
+        /// SCPSL文件夹
+        /// </summary>
         public static readonly string SCPSL = System.IO.Path.Combine(AppData, "SCP Secret Laboratory");
         public static string GetPluginsDir(int serverPort)
         {

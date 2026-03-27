@@ -11,19 +11,12 @@ namespace FMOD.FMOD
         public abstract string Name { get; }
         public abstract string Author { get; }
         public abstract Version Version { get; }
-        public abstract Type ConfigType {  get; }
-        public virtual void OnEnabled() { }
-        public virtual void OnDisable() { }
-        public Events.Handlers.Player PlayerEvent;
-        public object Config
+        public Type ConfigType {  get; }
+        public abstract void OnEnabled();
+        public abstract void OnDisable();
+        public Object Config
         {
-            get
-            {
-                if (ConfigType == null)
-                    return null;
-
-                return Activator.CreateInstance(ConfigType);
-            }
+            get => Activator.CreateInstance(ConfigType);
         }
     }
 }

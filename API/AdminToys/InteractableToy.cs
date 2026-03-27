@@ -20,14 +20,8 @@ namespace FMOD.API.AdminToys
         public new InvisibleInteractableToy Base { get; set; }
         public static InteractableToy Create(Vector3 Pos)
         {
-            var prefab = FindPrefab<InvisibleInteractableToy>();
-            if (prefab == null) return null;
-
-            var primitiveObject = Object.Instantiate(prefab);
-            InvisibleInteractableToy invisible = primitiveObject.GetComponent<InvisibleInteractableToy>();
-
-            NetworkServer.Spawn(primitiveObject);
-            invisible.NetworkPosition = Pos;
+            var i = FPrefabsManger.Spawn(Pos, PrefabType.InvisibleInteractableToy);
+            var invisible = i.gameObject.AddComponent<InvisibleInteractableToy>();
             return Get(invisible);
         }
         public static InteractableToy Get(AdminToy adminToy)

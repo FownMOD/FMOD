@@ -1,5 +1,5 @@
 ﻿using AdminToys;
-using FMOD.API.Interface;
+using Discord;
 using FMOD.Enums;
 using Mirror;
 using System;
@@ -38,13 +38,8 @@ namespace FMOD.API.AdminToys
         }
         public static AdminToy Create(Vector3 Position)
         {
-            var prefab = FindPrefab<Scp079CameraToy>();
-            if (prefab == null) return null;
-
-            var primitiveObject = UnityEngine.Object.Instantiate(prefab);
-            Scp079CameraToy cameraToy = primitiveObject.GetComponent<Scp079CameraToy>();
-
-            NetworkServer.Spawn(primitiveObject);
+            var prefab = FPrefabsManger.Spawn(Position, PrefabType.EzCameraToy);
+            var cameraToy= prefab.gameObject.AddComponent<Scp079CameraToy>();
             cameraToy.NetworkPosition = Position;
             return Get(cameraToy);
         }

@@ -53,7 +53,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\AppData\Roaming\SCP Secret Laboratory\LabAPI\dependencies\7777\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
@@ -115,6 +116,14 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SimpleDummyMusicAPI\bin\x64\Debug\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
@@ -166,12 +175,13 @@
     <Compile Include="API\Attributes\PluginDisabled.cs" />
     <Compile Include="API\Attributes\PluginEnabled.cs" />
     <Compile Include="API\Attributes\PluginInfo.cs" />
-    <Compile Include="API\CustHint\CustomHint.cs" />
-    <Compile Include="API\CustHint\PlayerHintController.cs" />
+    <Compile Include="API\FAudioPlayer\FDummyPlayer.cs" />
+    <Compile Include="API\FCassie.cs" />
+    <Compile Include="API\DamageHandles\CustAttackerDamage.cs" />
+    <Compile Include="API\DamageHandles\CustomFirearmDamage.cs" />
     <Compile Include="API\DamageHandles\DamageBase.cs" />
     <Compile Include="API\Door.cs" />
-    <Compile Include="API\DummyBase.cs" />
-    <Compile Include="API\Interface\IVoiceRole.cs" />
+    <Compile Include="API\FPrefabsManger.cs" />
     <Compile Include="API\Items\FirearmItem.cs" />
     <Compile Include="API\Items\Flashlight.cs" />
     <Compile Include="API\Items\Item.cs" />
@@ -179,23 +189,45 @@
     <Compile Include="API\Items\UseItem.cs" />
     <Compile Include="API\Log.cs" />
     <Compile Include="API\Map.cs" />
-    <Compile Include="API\Patchs\HintDisplayPatch.cs" />
+    <Compile Include="API\Patchs\DoorFixPatch.cs" />
+    <Compile Include="API\Patchs\ItemFixPatchs.cs" />
+    <Compile Include="API\Patchs\PickupFixPatchs.cs" />
     <Compile Include="API\Patchs\PlayerVisibilityPatch.cs" />
+    <Compile Include="API\Patchs\RagdollFixPatchs.cs" />
+    <Compile Include="API\Patchs\RoomFixPatchs.cs" />
+    <Compile Include="API\Patchs\ServerNamePatch.cs" />
     <Compile Include="API\Paths.cs" />
     <Compile Include="API\Permissions.cs" />
     <Compile Include="API\Pickup.cs" />
     <Compile Include="API\Player.cs" />
     <Compile Include="API\Ragdoll.cs" />
     <Compile Include="API\Respawn.cs" />
+    <Compile Include="API\Roles\CustomRole.cs" />
     <Compile Include="API\Roles\FpcRole.cs" />
+    <Compile Include="API\Roles\Human.cs" />
     <Compile Include="API\Roles\Role.cs" />
     <Compile Include="API\Roles\Scp049Role.cs" />
+    <Compile Include="API\Roles\Scp079.cs" />
     <Compile Include="API\Roles\Scp173Role.cs" />
     <Compile Include="API\Room.cs" />
     <Compile Include="API\Round.cs" />
     <Compile Include="API\Server.cs" />
-    <Compile Include="API\ServerSpecific\SimpleKeyBind.cs" />
-    <Compile Include="API\SSAudio\AudioPlayerBase.cs" />
+    <Compile Include="API\ServerSpecific\Button.cs" />
+    <Compile Include="API\ServerSpecific\CustomServerSpecifiSettings.cs" />
+    <Compile Include="API\ServerSpecific\DropdownSetting.cs" />
+    <Compile Include="API\ServerSpecific\GroupHeader.cs" />
+    <Compile Include="API\ServerSpecific\KeybindSetting.cs" />
+    <Compile Include="API\ServerSpecific\liderSetting.cs" />
+    <Compile Include="API\ServerSpecific\PlaintextSetting.cs" />
+    <Compile Include="API\ServerSpecific\SSServerSpecifiSetting.cs" />
+    <Compile Include="API\ServerSpecific\TextArea.cs" />
+    <Compile Include="API\ServerSpecific\TwoButtonsSetting.cs" />
+    <Compile Include="API\SpawnHelper\HubertMoonExtensions.cs" />
+    <Compile Include="API\SpawnHelper\Scp2563Manager.cs" />
+    <Compile Include="API\SpawnHelper\SpawnDoorStaticPosition.cs" />
+    <Compile Include="API\SpawnHelper\SpawnPositionStatic.cs" />
+    <Compile Include="API\SpawnHelper\SpawnRoleStaticPosition.cs" />
+    <Compile Include="API\SpawnHelper\StaticSpawnPosition.cs" />
     <Compile Include="Commands\GAMECommand\FMODCommand.cs" />
     <Compile Include="Enums\AdminToyType.cs" />
     <Compile Include="Enums\AudioType.cs" />
@@ -203,10 +235,8 @@
     <Compile Include="Enums\DoorName.cs" />
     <Compile Include="Enums\KeycardPermissions.cs" />
     <Compile Include="Enums\PlaybackState.cs" />
-    <Compile Include="Events\EventArgs\Dummy\Create.cs" />
-    <Compile Include="Events\EventArgs\Dummy\Destroy.cs" />
-    <Compile Include="Events\EventArgs\Pickup\Create.cs" />
-    <Compile Include="Events\EventArgs\Pickup\Desroy.cs" />
+    <Compile Include="Enums\PrefabType.cs" />
+    <Compile Include="Events\EventArgs\CASSIE\StartingArgs.cs" />
     <Compile Include="Events\EventArgs\Player\ChangingItemArgs.cs" />
     <Compile Include="Events\EventArgs\Player\EscapingPocketDimensionEventArgs.cs" />
     <Compile Include="Events\EventArgs\Player\HurtingEventArgs.cs" />
@@ -217,22 +247,28 @@
     <Compile Include="Events\EventArgs\Player\PlayerPickiItemArgs.cs" />
     <Compile Include="Events\EventArgs\Player\ShootingEventArgs.cs" />
     <Compile Include="Events\EventArgs\Player\SpawnedRoleArgs.cs" />
-    <Compile Include="Events\Handlers\Dummy.cs" />
-    <Compile Include="Events\Handlers\Pickup.cs" />
+    <Compile Include="Events\EventArgs\Round\RoundEndArgs.cs" />
+    <Compile Include="Events\EventArgs\Round\RoundStartArgs.cs" />
+    <Compile Include="Events\Handlers\CASSIE.cs" />
     <Compile Include="Events\Handlers\Player.cs" />
     <Compile Include="Events\EventArgs\Player\PlayerJoinArgs.cs" />
+    <Compile Include="Events\Handlers\Round.cs" />
     <Compile Include="Events\Interfaces\Event.cs" />
     <Compile Include="Events\Interfaces\IAttackerEvent.cs" />
     <Compile Include="Events\Interfaces\IDeniableEvent.cs" />
     <Compile Include="Events\Interfaces\IFMODEvent.cs" />
     <Compile Include="Events\Interfaces\IFMODPlayerEvent.cs" />
     <Compile Include="Events\Interfaces\IPlayerEvent.cs" />
+    <Compile Include="Events\Patchs\CassiePatch.cs" />
     <Compile Include="Events\Patchs\PlayerPatchs.cs" />
+    <Compile Include="Events\Patchs\RoundPatch.cs" />
     <Compile Include="Extensions\AudioMessageExtensions.cs" />
     <Compile Include="Extensions\ItemTypeExtensions.cs" />
     <Compile Include="Extensions\ListExtensions.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\RoleTypeEx.cs" />
+    <Compile Include="Extensions\VoiceMessageExtensions.cs" />
+    <Compile Include="FMOD\IMOD.cs" />
     <Compile Include="FMOD\MOD.cs" />
     <Compile Include="Loader\LabConfig.cs" />
     <Compile Include="Loader\Load.cs" />
@@ -250,8 +286,6 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Events\EventArgs\Item\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

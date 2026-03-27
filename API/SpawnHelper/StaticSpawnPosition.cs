@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VoiceChat;
+using UnityEngine;
 
-namespace FMOD.API.Interface
+namespace FMOD.API.SpawnHelper
 {
-    public interface IVoiceRole
+    public abstract class StaticSpawnPosition
     {
-        VoiceChatChannel VoiceChatChannel { get; set; }
+        
     }
 }

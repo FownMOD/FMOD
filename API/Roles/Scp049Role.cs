@@ -20,6 +20,5 @@ namespace FMOD.API.Roles
         public new PlayerRoles.PlayableScps.Scp049.Scp049Role Base { get; set; }
         public HumeShieldModuleBase ShieldModuleBase => Base.HumeShieldModule;
         public SubroutineManagerModule Subroutine => Base.SubroutineModule;
-        public ScpHudBase ScpHudUI => Base.HudPrefab;
     }
 }

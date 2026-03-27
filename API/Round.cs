@@ -32,8 +32,7 @@ namespace FMOD.API
         {
             get
             {
-                ReferenceHub referenceHub;
-                return ReferenceHub.TryGetHostHub(out referenceHub) && referenceHub.characterClassManager.RoundStarted;
+                return RoundStart.RoundStarted;
             }
         }
 

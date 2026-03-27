@@ -18,14 +18,11 @@ namespace FMOD.API.Items
     public class Item
     {
         public static List<Item> List = new List<Item>();
-        public static Item Get(ItemType type)
+        public Item(ItemBase @base)
         {
-            return List.First(x => x.Type == type);
+            Base = @base;
         }
-        public static Item Get(ushort Serial)
-        {
-            return List.First(x => x.Serial == Serial);
-        }
+
         public static Item Get(ItemBase itemBase)
         {
             if (itemBase is Firearm)

@@ -11,7 +11,7 @@ namespace FMOD.API.Items
 {
     public class UseItem : Item
     {
-        public UseItem(UsableItem usable)
+        public UseItem(UsableItem usable):base(usable)
         {
             Base = usable;
         }

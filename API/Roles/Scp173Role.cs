@@ -21,29 +21,5 @@ namespace FMOD.API.Roles
         {
             get =>Base.SubroutineModule;
         }
-        public ScpHudBase HudPrefab
-        {
-            get => Base.HudPrefab;
-        }
-        public Scp173AudioPlayer Scp173AudioPlayer
-        {
-            get => SubroutineModule.GetComponent<Scp173AudioPlayer>();
-        }
-        public Scp173BlinkTimer Scp173BlinkTimer
-        {
-            get =>SubroutineModule.GetComponent<Scp173BlinkTimer>();
-        }
-        public Scp173BreakneckSpeedsAbility Scp173BreakneckSpeedsAbility
-        {
-            get => SubroutineModule.GetComponent<Scp173BreakneckSpeedsAbility>();
-        }
-        public Scp173ChaseThemeProvider Scp173ChaseThemeProvider
-        {
-            get => SubroutineModule.GetComponent<Scp173ChaseThemeProvider>();
-        }
-        public Scp173ObserversTracker Scp173ObserversTracker
-        {
-            get => SubroutineModule.GetComponent<Scp173ObserversTracker>();
-        }
     }
 }

@@ -11,10 +11,10 @@ namespace FMOD.API
 {
     public class Map
     {
-        public static List<Item> Items = new List<Item>();
-        public static List<Room> Rooms = new List<Room>();
-        public static List<Pickup> Pickups = new List<Pickup>();
-        public static DecontaminationController decontaminationController {  get; set; }
+        public static List<Item> Items = Item.List;
+        public static List<Room> Rooms = Room.List;
+        public static List<Pickup> Pickups = Pickup.List;
+        public static DecontaminationController DecontaminationController {  get; set; }
         public static void ChangRoomColor(RoomName roomName, UnityEngine.Color color)
         {
             Room room = Room.GetRoom(roomName);

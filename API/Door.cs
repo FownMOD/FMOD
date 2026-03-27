@@ -1,4 +1,5 @@
-﻿using FMOD.Enums;
+﻿using AdminToys;
+using FMOD.Enums;
 using Interactables.Interobjects;
 using Interactables.Interobjects.DoorUtils;
 using LabApi.Features.Wrappers;
@@ -16,21 +17,45 @@ namespace FMOD.API
     public class Door
     {
         public static List<Door> Doors = new List<Door>();
+        public Door(DoorVariant doorVariant)
+        {
+            this.Base = doorVariant;
+        }
         public static Door RandomDoor()
         {
             return Doors.RandomItem();
         }
+        public static Door Create(Vector3 Position)
+        {
+            GameObject door = FPrefabsManger.Spawn(Position, PrefabType.EZBreakableDoor);
+            DoorVariant doorVariant = door.gameObject.AddComponent<DoorVariant>();
+            UnityEngine.Object.Instantiate(door);
+            Doors.Add(new Door(doorVariant));
+            return new Door(doorVariant);
+        }
+        public static Door Get(DoorVariant doorVariant)
+        {
+            if (Doors.Any(x => x.Base == doorVariant))
+            {
+                return Doors.First(x => x.Base == doorVariant);
+            }
+            return new Door(doorVariant);
+        }
         public static Door Get(DoorName doorName)
         {
-            return Doors.FirstOrDefault(x => x.DoorName == doorName);
+            if (Doors.Any(x => x.DoorName == doorName))
+            {
+                return Doors.First(x => x.DoorName == doorName);
+            }
+            return null;
         }
-        public static Door Get(Vector3 pos)
+        public static Door Get(GameObject door)
         {
-            return Doors.FirstOrDefault(x => x.Position == pos);
-        }
-        public static Door Get(FacilityZone facilityZone)
-        {
-            return Doors.FirstOrDefault(x => x.Zone == facilityZone);
+            if (door.TryGetComponent<DoorVariant>(out DoorVariant dv))
+            {
+                return Get(dv);
+            }
+            return null;
         }
         public Vector3 Position => GameObject.transform.position;
         public Quaternion Rotation
@@ -57,7 +82,6 @@ namespace FMOD.API
             set
             {
                 this.GameObject.transform.localScale = value;
-                NetworkServer.Spawn(this.GameObject);
             }
         }
         public KeycardPermissions KeycardPermissions
@@ -69,6 +93,13 @@ namespace FMOD.API
             set
             {
                 this.RequiredPermissions = (DoorPermissionFlags)value;
+            }
+        }
+        public DoorPermissionsPolicy PermissionsPolicy
+        {
+            get
+            {
+                return this.Base.PermissionsPolicy;
             }
         }
         public DoorPermissionFlags RequiredPermissions
@@ -84,7 +115,17 @@ namespace FMOD.API
         }
 
         public string Name => Base.name;
-        public DoorName DoorName { get; }
+        public DoorName DoorName
+        {
+            get
+            {
+                if (Enum.TryParse(Name, out DoorName doorName))
+                {
+                    return doorName;
+                }
+                return DoorName.UnknownDoor;
+            }
+        }
         public MapGeneration.FacilityZone Zone
         {
             get

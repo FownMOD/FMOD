@@ -11,8 +11,11 @@ namespace FMOD.API
 {
     public class Ragdoll
     {
-        public static List<BasicRagdoll> BasicRagdolls = new List<BasicRagdoll>();
         public static List<Ragdoll> Ragdolls = new List<Ragdoll>();
+        public Ragdoll(BasicRagdoll Bs)
+        {
+            this.Base = Bs;
+        }
         public static Ragdoll Get(BasicRagdoll basic)
         {
             return Ragdolls.FirstOrDefault(x => x.Base == basic);

@@ -11,7 +11,7 @@ namespace FMOD.API.Items
 {
     public class FirearmItem:Item
     {
-        public FirearmItem(InventorySystem.Items.Firearms.Firearm firearm)
+        public FirearmItem(InventorySystem.Items.Firearms.Firearm firearm):base(firearm)
         {
             this.Base = firearm;
         }

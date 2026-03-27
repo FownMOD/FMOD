@@ -10,7 +10,7 @@ namespace FMOD.API.Items
 {
     public class Flashlight:Item
     {
-        public Flashlight(FlashlightItem flashlightItem)
+        public Flashlight(FlashlightItem flashlightItem):base(flashlightItem)
         {
             this.Base = flashlightItem;
         }

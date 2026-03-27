@@ -12,24 +12,27 @@ namespace FMOD.API
 {
     public class Room
     {
-        public static List<RoomIdentifier> IdentifierList = new List<RoomIdentifier>();
+        public Room(RoomIdentifier roomIdentifier)
+        {
+            this.Base= roomIdentifier;
+        }
         public static List<Room> List = new List<Room>();
         public static Room RandomRoom()
         {
            return List.GetRandomItem();
         }
-        public RoomIdentifier RoomIdentifier { get; }
-        public RoomName Name => RoomIdentifier.Name;
-        public string RoomName => RoomIdentifier.name;
-        public Vector3 Position => RoomIdentifier.transform.position;
-        public RoomShape RoomShape => RoomIdentifier.Shape;
+        public RoomIdentifier Base { get; }
+        public RoomName Name => Base.Name;
+        public string RoomName => Base.name;
+        public Vector3 Position => Base.transform.position;
+        public RoomShape RoomShape => Base.Shape;
         public RoomLight Light { get; }
-        public GameObject GameObject => RoomIdentifier.gameObject;
-        public Transform Transform => RoomIdentifier.transform;
-        public FacilityZone Zone => RoomIdentifier.Zone;
+        public GameObject GameObject => Base.gameObject;
+        public Transform Transform => Base.transform;
+        public FacilityZone Zone => Base.Zone;
         public Quaternion Quaternion => GameObject.transform.rotation;
         public Vector3 Scale => GameObject.transform.localScale;
-        public RoomLightController RoomLightController => RoomIdentifier.LightControllers.FirstOrDefault();
+        public RoomLightController RoomLightController => Base.LightControllers.FirstOrDefault();
         public IEnumerable<Pickup> Pickups
         {
             get
@@ -41,7 +44,8 @@ namespace FMOD.API
         }
         public static Room GetRoom(RoomName roomName)
         {
-            return List.First(x => x.Name == roomName);
+            RoomIdentifier identifier = RoomIdentifier.AllRoomIdentifiers.First(X => X.Name == roomName);
+            return new Room(identifier);
         }
         public static Vector3 GetPositionToWord(RoomName roomName, Vector3 position)
         {
@@ -56,39 +60,12 @@ namespace FMOD.API
         }
         public static Room GetRoom(Vector3 Position)
         {
-            return List.First(x => x.Position == Position);
+            RoomIdentifier identifier = RoomIdentifier.AllRoomIdentifiers.First(X => X.transform.position == Position);
+            return new Room(identifier);
         }
         public static Room GetRoom(RoomIdentifier identifier)
         {
-            return List.FirstOrDefault(x => x.RoomIdentifier == identifier);
-        }
-        public static Room GetRoom(RoomShape roomShape)
-        {
-            return List.First(x => x.RoomShape == roomShape);
-        }
-        public static RoomIdentifier GetIdentifier(RoomName roomName)
-        {
-            return IdentifierList.FirstOrDefault(x => x.Name == roomName);
-        }
-        public static RoomIdentifier GetIdentifier(Vector3 vector3)
-        {
-            return IdentifierList.FirstOrDefault(x => x.transform.position == vector3);
-        }
-        public static RoomIdentifier GetIdentifier(RoomShape roomShape)
-        {
-            return IdentifierList.FirstOrDefault(x => x.Shape == roomShape);
-        }
-        public static RoomIdentifier TryGetIdentifier(RoomName roomName, out RoomIdentifier result)
-        {
-            return result = GetIdentifier(roomName);
-        }
-        public static RoomIdentifier TryGetIdentifier(RoomShape roomShape, out RoomIdentifier result)
-        {
-            return result = GetIdentifier(roomShape);
-        }
-        public static RoomIdentifier TryGetIdentifier(Vector3 vector3, out RoomIdentifier result)
-        {
-            return result = GetIdentifier(vector3);
+            return new Room(identifier);
         }
         public void ChangColor(UnityEngine.Color color)
         {

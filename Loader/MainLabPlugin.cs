@@ -16,7 +16,7 @@ namespace FMOD.Loader
 
         public override string Description => "SCP:SL插件加载器";
 
-        public override string Author => "灰";
+        public override string Author => "FMOD-Team";
 
         public override Version Version => Other.FMODVersion.MainVersion;
 
@@ -27,10 +27,12 @@ namespace FMOD.Loader
             MainHarmony = new Harmony("fmod.harmony.Patch");
             MainHarmony.PatchAll();
             Paths.GenerateFoldersAndFiles(Server.Port);
+            FPrefabsManger.Register();
             Log.Debug($"使用Harmony进行补丁事件");
             Log.Debug($"{Other.LogMsg.FMOD}");
             Log.Debug($"欢迎使用FMOD插件加载器");
             Load.LoadAllMod(Config.LoadLabPlugin);
+            ServerConsole.ReloadServerName();
         }
         public override void Disable()
         {

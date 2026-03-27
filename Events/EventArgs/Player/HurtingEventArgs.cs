@@ -4,40 +4,32 @@ using FMOD.Events.Interfaces;
 using PlayerStatsSystem;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace FMOD.Events.EventArgs.Player
 {
-    public class HurtingEventArgs : IFMODPlayerEvent, IAttackerEvent
+    public class HurtingEventArgs
     {
-        public HurtingEventArgs(ReferenceHub target, DamageHandlerBase damageHandlerBase)
+        public HurtingEventArgs(FirearmDamageHandler firearm, API.Player Target)
         {
-            Player = API.Player.Get(target);
-            DamageHandler = new DamageBase
-            {
-                Base = damageHandlerBase,
-                Target = Player
-            };
-            if (damageHandlerBase is AttackerDamageHandler attackerDamage)
-            {
-                Attacker = API.Player.Get(attackerDamage.Attacker.Hub);
-                DamageHandler.Attacker = Attacker;
-            }
-
-            IsAllowed = true;
+            this.FirearmDamageHandler = new CustomFirearmDamage(firearm);
+            this.Target = Target;
+            this.IsAllow = true;
         }
-
-        public API.Player Player { get; set; }
-        public bool IsAllowed { get; set; }
-        public API.Player Attacker { get; }
-        public DamageBase DamageHandler { get; }
-
-        public float Amount
+        public CustomFirearmDamage FirearmDamageHandler;
+        public API.Player Attacker
         {
-            get => DamageHandler.Damage;
-            set => DamageHandler.Damage = value;
+            get => FirearmDamageHandler.Attacker;
         }
+        public API.Player Target { get; set; }
+        public float Damage
+        {
+            get => FirearmDamageHandler.Damage;
+            set => FirearmDamageHandler.Damage = value;
+        }
+        public bool IsAllow { get; set; }
     }
 }

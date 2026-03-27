@@ -64,15 +64,6 @@ namespace FMOD.API.AdminToys
                     throw new NotImplementedException($"AdminToyType {adminToyType} not implemented");
             }
         }
-        protected static GameObject FindPrefab<T>() where T : AdminToyBase
-        {
-            foreach (var prefab in NetworkManager.singleton.spawnPrefabs)
-            {
-                if (prefab.GetComponent<T>() != null)
-                    return prefab;
-            }
-            return null;
-        }
 
         public Vector3 Scale
         {

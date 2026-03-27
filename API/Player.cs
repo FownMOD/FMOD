@@ -6,12 +6,8 @@ using CentralAuth;
 using CommandSystem;
 using CommandSystem.Commands.RemoteAdmin.Dms;
 using CustomPlayerEffects;
-using Discord;
-using FMOD.API.CustHint;
-using FMOD.API.Interface;
 using FMOD.API.Roles;
 using FMOD.API.ServerSpecific;
-using FMOD.API.SSAudio;
 using FMOD.Events.Handlers;
 using FMOD.Extensions;
 using Footprinting;
@@ -41,6 +37,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Utils;
 using VoiceChat;
 using static RoundPlayerHistory;
 using static RoundSummary;
@@ -260,14 +257,28 @@ namespace FMOD.API
         }
 
 
-        public void AddItem(ItemType itemType)
+        public API.Items.Item AddItem(ItemType itemType)
         {
-            ReferenceHub.inventory.ServerAddItem(itemType, InventorySystem.Items.ItemAddReason.AdminCommand);
+            ItemBase itemBase = ReferenceHub.inventory.ServerAddItem(itemType, InventorySystem.Items.ItemAddReason.AdminCommand);
+            return API.Items.Item.Get(itemBase);
         }
-        public API.Items.Item AddItem(ItemType itemType, InventorySystem.Items.ItemAddReason reason)
+        public ItemBase AddItem(ItemType itemType, ItemAddReason reason)
         {
-            LabApi.Features.Wrappers.Item item = LabApi.Features.Wrappers.Item.Get(ReferenceHub.inventory.ServerAddItem(itemType, InventorySystem.Items.ItemAddReason.AdminCommand));
-            return API.Items.Item.Get(item.Base);
+            return ReferenceHub.inventory.ServerAddItem(itemType, reason);
+        }
+        public void AddItem(List<ItemType> items)
+        {
+            foreach (ItemType item in items)
+            {
+                AddItem(item);
+            }
+        }
+        public void AddItem(List<API.Items.Item> items)
+        {
+            foreach (var item in items)
+            {
+                AddItem(item.Type);
+            }
         }
         public RoundPlayerHistory.PlayerHistoryLog GetData()
         {
@@ -324,13 +335,6 @@ namespace FMOD.API
                     return VoiceChatChannel.None;
                 }
                 return voiceModule.CurrentChannel;
-            }
-            set
-            {
-                if (VoiceModule is Interface.IVoiceRole voiceRole)
-                {
-                    voiceRole.VoiceChatChannel = value;
-                }
             }
         }
         public uint NetworkId => ReferenceHub.characterClassManager.netId;
@@ -793,17 +797,6 @@ namespace FMOD.API
                 return ReferenceHub.GetComponent<AmmoElement>();
             }
         }
-        public EmotionPresetType EmotionPresetType
-        {
-            get
-            {
-                return EmotionSync.GetEmotionPreset(ReferenceHub);
-            }
-            set
-            {
-                EmotionSync.ServerSetEmotionPreset(ReferenceHub, value);
-            }
-        }
         public float WalkSpeed
         {
             get
@@ -874,13 +867,16 @@ namespace FMOD.API
             }
         }
         public Faction Faction => Team.GetFaction();
-        public void AddCustHint(ABHint hint)
+        public void Explod(ExplosionType explosionType)
         {
-            hint.SendToPlayer(ReferenceHub);
+            ExplosionUtils.ServerExplode(this.ReferenceHub, explosionType);
         }
-        public void RemoveCustHint(ABHint hint)
+        public Transform HitAndReturnObject(float distance,out RaycastHit hit)
         {
-            hint.RemoveFromPlayer(Connection);
+            Physics.Raycast(Camera.position, Camera.forward, out RaycastHit rhit, distance);
+            hit = rhit;
+            return hit.collider.transform;
         }
+
     }
 }

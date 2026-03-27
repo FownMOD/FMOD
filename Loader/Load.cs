@@ -25,9 +25,10 @@ namespace FMOD.Loader
             LoadsLabPlugins.Clear();
             var mods = LoadTypesFromAssemblies(typeof(MOD), Paths.GetPluginsDir(Server.Port));
             var labplugins = LoadTypesFromAssemblies(typeof(Plugin), Paths.GetPluginsDir(Server.Port));
-            foreach (var i in mods)
+            var imods = LoadTypesFromAssemblies(typeof(IMOD<Object>), Paths.GetPluginsDir(Server.Port));
+            foreach(var mod in imods)
             {
-                LoadMod(i);
+                LoadMod(mod);
             }
             if (LoadLabPlugin)
             {
@@ -83,6 +84,7 @@ namespace FMOD.Loader
                         {
                             plugin.Enable();
                             Log.Debug($"已启用LabAPI插件: {PluginName}");
+                            
                         }
                         else
                         {

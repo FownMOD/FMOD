@@ -10,32 +10,21 @@ using System.Threading.Tasks;
 
 namespace FMOD.Events.EventArgs.Player
 {
-    public class PlayerDiedEventsArgs : IFMODPlayerEvent
+    public class PlayerDiedEventsArgs
     {
-        public PlayerDiedEventsArgs(ReferenceHub target, DamageHandlerBase damageHandlerBase)
+        public PlayerDiedEventsArgs(FirearmDamageHandler firearmDamageHandler, API.Player Target) 
         {
-            Player = API.Player.Get(target);
-
-            // 创建 DamageBase 包装器
-            DamageBase = new DamageBase
-            {
-                Base = damageHandlerBase,
-                Target = Player
-            };
-
-            // 尝试获取攻击者
-            if (damageHandlerBase is AttackerDamageHandler attackerDamage)
-            {
-                Attacker = API.Player.Get(attackerDamage.Attacker.Hub);
-                DamageBase.Attacker = Attacker;
-            }
-
-            IsAllowed = true;
+            this.DamageHandler = new CustomFirearmDamage(firearmDamageHandler);
+            this.Target = Target;
         }
-
-        public DamageBase DamageBase { get; }
-        public API.Player Player { get; set; }
-        public API.Player Attacker { get; }
-        public bool IsAllowed { get; set; }
+        public CustomFirearmDamage DamageHandler { get; set; }
+        public API.Player Attacker
+        {
+            get
+            {
+                return DamageHandler.Attacker;
+            }
+        }
+        public API.Player Target { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace FMOD.API.Items
     public class KeyCardItem:Item
     {
         public static List<KeyCardItem> KeyCards = new List<KeyCardItem>();
-        public KeyCardItem(InventorySystem.Items.Keycards.KeycardItem keycard)
+        public KeyCardItem(InventorySystem.Items.Keycards.KeycardItem keycard):base(keycard)
         {
             this.Base = keycard;
         }
@@ -52,7 +52,7 @@ namespace FMOD.API.Items
                     num += customizableDetail.CustomizablePropertiesAmount;
                 }
             }
-            Item item = targetPlayer.AddItem(itemType, ItemAddReason.AdminCommand);
+            Item item = targetPlayer.AddItem(itemType);
             return (KeyCardItem)item;
         }
     }

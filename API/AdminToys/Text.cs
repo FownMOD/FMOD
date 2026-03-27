@@ -16,16 +16,9 @@ namespace FMOD.API.AdminToys
 
         public static Text Create(Vector3 pos, string content = "")
         {
-            var prefab = FindPrefab<TextToy>();
-            if (prefab == null) return null;
-
-            var textObject = Object.Instantiate(prefab);
-            TextToy textToy = textObject.GetComponent<TextToy>();
-
-            NetworkServer.Spawn(textObject);
-            textToy.NetworkPosition = pos;
-            textToy.Network_textFormat = content;
-
+            var t = FPrefabsManger.Spawn(pos, PrefabType.TextToy);
+            var textToy = t.gameObject.AddComponent<TextToy>();
+            textToy.TextFormat = content;
             return new Text(textToy);
         }
 

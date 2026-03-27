@@ -20,11 +20,11 @@ namespace FMOD.Events.Handlers
         public static Event<PlayerLeftArgs> PlayerLeft { get; set; } = new Event<PlayerLeftArgs>();
         public static Event<PlayerEscapeingArgs> PlayerEscapeing { get; set; } = new Event<PlayerEscapeingArgs>();
         public static Event<EscapingPocketDimensionEventArgs> PlayerEscapingPocketDimension { get; set; } = new Event<EscapingPocketDimensionEventArgs>();
-        public static Event<HurtingEventArgs> PlayerHurting { get; set; } = new Event<HurtingEventArgs>();
         public static Event<ChangingItemArgs> PlayerChangingItem { get; set; } = new Event<ChangingItemArgs>();
         public static Event<SpawnedRoleArgs> PlayerSpawnedRole { get; set; } = new Event<SpawnedRoleArgs>();
-        public static Event<PlayerDiedEventsArgs> PlayerDied { get; set; } = new Event<PlayerDiedEventsArgs>();
         public static Event<ShootingEventArgs> PlayerShooting { get; set; }=new Event<ShootingEventArgs>();
+        public static Event<PlayerDiedEventsArgs> PlayerDied { get ; set; }= new Event<PlayerDiedEventsArgs>();
+        public static Event<HurtingEventArgs> PlayerHurting { get; set; } = new Event<HurtingEventArgs>();
         /// <summary>
         /// 玩家射击事件
         /// </summary>
@@ -32,12 +32,13 @@ namespace FMOD.Events.Handlers
         {
             PlayerShooting?.Invoke(ev);
         }
-        /// <summary>
-        /// 玩家死亡事件
-        /// </summary>
-        public static void OnPlayerDied(PlayerDiedEventsArgs args)
+        public static void OnPlayerHurting(HurtingEventArgs ev)
         {
-            PlayerDied?.Invoke(args);
+            PlayerHurting?.Invoke(ev);
+        }
+        public static void OnPlayerDied(PlayerDiedEventsArgs ev)
+        {
+            PlayerDied?.Invoke(ev);
         }
         /// <summary>
         /// 触发玩家加入事件
@@ -87,13 +88,6 @@ namespace FMOD.Events.Handlers
             PlayerEscapingPocketDimension.Invoke(args);
         }
 
-        /// <summary>
-        /// 触发玩家受伤事件
-        /// </summary>
-        public static void OnPlayerHurting(HurtingEventArgs args)
-        {
-            PlayerHurting.Invoke(args);
-        }
 
         /// <summary>
         /// 触发玩家切换物品事件

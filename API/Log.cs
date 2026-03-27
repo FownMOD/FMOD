@@ -20,7 +20,7 @@ namespace FMOD.API
         {
             GameCore.Console.AddLog(msg, UnityEngine.Color.red);
         }
-        public static void CustomInfo(string msg, UnityEngine.Color color)
+        public static void CustomColor(string msg, UnityEngine.Color color)
         {
             GameCore.Console.AddLog(msg, color);
         }

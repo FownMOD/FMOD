@@ -8,6 +8,6 @@ namespace FMOD.Other
 {
     public class FMODVersion
     {
-        public static Version MainVersion = new Version(1, 2);
+        public static Version MainVersion = new Version(2,1);
     }
 }

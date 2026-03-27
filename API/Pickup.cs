@@ -17,9 +17,9 @@ namespace FMOD.API
 {
     public class Pickup
     {
-        public Pickup(Vector3 position, ItemType itemType)
+        public Pickup(ItemPickupBase itemBase)
         {
-            CreatAndSpawn(position, itemType);
+            itemPickupBase = itemBase;
         }
         public static List<Pickup> List = new List<Pickup>();
         public static Pickup CreatAndSpawn(Vector3 position, ItemType itemType)
@@ -36,11 +36,7 @@ namespace FMOD.API
         }
         public static Pickup Get(ItemPickupBase itemPickupBase)
         {
-            return List.FirstOrDefault(x => x.itemPickupBase == itemPickupBase);
-        }
-        public static Pickup Get(ushort Serial)
-        {
-            return List.FirstOrDefault(x => x.Serial == Serial);
+            return List.First(x => x.itemPickupBase == itemPickupBase);
         }
         public ItemPickupBase itemPickupBase { get; }
         public ushort Serial => itemPickupBase.Info.Serial;
@@ -96,9 +92,7 @@ namespace FMOD.API
         }
         public void Destroyed()
         {
-            Events.EventArgs.Pickup.Desroy desroy = new Events.EventArgs.Pickup.Desroy(itemPickupBase);
-            Events.Handlers.Pickup.OnDestroy(desroy);
-            itemPickupBase.DestroySelf();
+            NetworkServer.Destroy(GameObject);
         }
         public PickupStandardPhysics PickupStandardPhysics
         {
@@ -129,8 +123,6 @@ namespace FMOD.API
         public Transform Transform { get; }
         public void Spawn()
         {
-            Events.EventArgs.Pickup.Create create = new Events.EventArgs.Pickup.Create(this.itemPickupBase);
-            Events.Handlers.Pickup.OnCreate(create);
             NetworkServer.Spawn(this.GameObject);
         }
     }

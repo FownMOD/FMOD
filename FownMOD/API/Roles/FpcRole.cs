@@ -50,6 +50,18 @@ namespace FMOD.API.Roles
                 return Base.FpcModule.Noclip;
             }
         }
+        public bool Noclip
+        {
+            get
+            {
+                return FpcNoclip.IsActive;
+            }
+            set
+            {
+                FpcNoclip.IsActive = true;
+            }
+        }
+
         public VisibilityController VisibilityController => Base.VisibilityController;
         public static List<Player> VisibilityList = new List<Player>();
     }

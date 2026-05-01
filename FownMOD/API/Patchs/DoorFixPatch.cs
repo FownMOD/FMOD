@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using FMOD.API.Doors;
+using HarmonyLib;
 using Interactables.Interobjects.DoorUtils;
 using System;
 using System.Collections.Generic;

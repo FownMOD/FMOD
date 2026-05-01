@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace FMOD.API
+namespace FMOD.API.Doors
 {
     public class Door
     {

@@ -55,13 +55,10 @@ namespace FMOD.API
             try
             {
                 Log.Debug($"正在为服务器端口 {serverPort} 生成文件夹结构...");
-
-                // 创建基础目录
                 CreateDirectoryIfNotExists(BaseDir);
                 CreateDirectoryIfNotExists(DependenceDir);
                 CreateDirectoryIfNotExists(ConfigDir);
                 CreateDirectoryIfNotExists(Translation);
-                // 创建端口特定的目录
                 string pluginsDir = GetPluginsDir(serverPort);
                 string configSubDir = System.IO.Path.Combine(ConfigDir, serverPort.ToString());
                 CreatePermissionsFileIfNotExists();

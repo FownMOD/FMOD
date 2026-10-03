@@ -1,3 +1,6 @@
+# 通知
+该项目将不再开发，我们将开发[SweetPluginAPI](https://github.com/FownMOD/SweetPluginAPI)一个SCP:SL的服务器插件框架
+
 # Select a readme language(选择自述语言)
 | 语言 | Language | 链接/Link |
 | :-- | :-- | :-- |
